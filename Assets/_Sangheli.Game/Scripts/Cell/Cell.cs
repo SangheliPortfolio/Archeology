@@ -13,8 +13,11 @@ namespace Sangheli.Game
 
 		private ConfigCell configCell;
 		private int currentState;
+		private int maxState;
 
 		private EventController eventController;
+
+		private int targetLayer = -1;
 
 		public override void Init(ConfigCell configCell,int cellSize = -1)
 		{
@@ -24,6 +27,7 @@ namespace Sangheli.Game
 			if (cellSize < 0 || cellSize > configCell.cellStepCount)
 				cellSize = configCell.cellStepCount;
 
+			this.maxState = cellSize;
 			this.currentState = cellSize;
 			this.UpdateVisual(this.currentState);
 		}
@@ -44,6 +48,12 @@ namespace Sangheli.Game
 				}
 			}
 
+			if(this.currentState == this.targetLayer)
+			{
+				return;
+			}
+
+
 			this.currentState--;
 			if (this.currentState < 1)
 			{
@@ -52,6 +62,16 @@ namespace Sangheli.Game
 
 			this.eventController.onCellClicked?.Invoke();
 			this.UpdateVisual(this.currentState);
+		}
+
+		public override void SetTarget()
+		{
+			this.targetLayer = Random.Range(1, this.maxState);
+		}
+
+		public void CollectTarget()
+		{
+			this.targetLayer = -1;
 		}
 	}
 }

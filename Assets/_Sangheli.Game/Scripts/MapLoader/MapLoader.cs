@@ -1,6 +1,7 @@
 using Sangheli.Config;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Sangheli.Game
@@ -16,6 +17,9 @@ namespace Sangheli.Game
 
 		[SerializeField]
 		private ConfigCell configCell;
+
+		[SerializeField]
+		private ChanceController chanceController;
 
 		[Space]
 		[Header("Field")]
@@ -58,6 +62,44 @@ namespace Sangheli.Game
 					newCell.Init(this.configCell);
 				}
 			}
+
+			this.SetTargetsToField(this.cellList);
+		}
+
+		private void SetTargetsToField(List<AbstractCell> cellList)
+		{
+			List<int> idlist = this.GetCellListWithTarget();
+
+			foreach(int id in idlist)
+			{
+				if(cellList.Count>id && cellList[id] != null)
+				{
+					cellList[id].SetTarget();
+				}
+			}
+		}
+
+		private List<int> GetCellListWithTarget()
+		{
+			float targetFieldChance = this.chanceController.GetChanceForField();
+			float max = this.configField.sizeX * this.configField.sizeY;
+
+			int cellsWithTarget = (int)(max * targetFieldChance);
+			int diff = (int)max - cellsWithTarget;
+
+			List<int> allWalues = new List<int>();
+			for(int i = 0; i < max; i++)
+			{
+				allWalues.Add(i);
+			}
+
+			for(int i = 0; i < diff; i++)
+			{
+				if (allWalues.Count > 0)
+					allWalues.RemoveAt(Random.Range(0, allWalues.Count));
+			}
+
+			return allWalues;
 		}
 	}
 }

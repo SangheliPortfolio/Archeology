@@ -2835,6 +2835,7 @@ MonoBehaviour:
   configField: {fileID: 11400000, guid: f44d156bcdcb81f45acfca79ad6de370, type: 2}
   configCellPrefab: {fileID: 11400000, guid: b2ad585825dccda41a869d56deb686aa, type: 2}
   configCell: {fileID: 11400000, guid: eac38f3df98426b49839da3556d60fa3, type: 2}
+  chanceController: {fileID: 11400000, guid: 43664b36990037a4096529bd3e19b5d9, type: 2}
   zeroPoint: {fileID: 939299833}
   fieldParent: {fileID: 525566708}
 --- !u!1 &2113917433

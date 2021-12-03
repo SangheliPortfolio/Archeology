@@ -9,5 +9,6 @@ namespace Sangheli.Game
 	{
 		public abstract void Init(ConfigCell configCell, int cellSize = -1);
 		public abstract void UpdateVisual(int state = -1);
+		public abstract void SetTarget();
 	}
 }
