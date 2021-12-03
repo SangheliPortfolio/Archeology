@@ -159,6 +159,9 @@ namespace Sangheli.Game
 
 		private SaveParameters CollectSaveGame()
 		{
+			if (!this.isGameEnabled)
+				return null;
+
 			SaveParameters save = new SaveParameters();
 			save.name = "game";
 			save.intList = new List<int>() { this.currentTargetCount, this.currentShovelCount };
@@ -168,12 +171,16 @@ namespace Sangheli.Game
 		private async Task<bool> RestoreSaveData(SaveParameters save)
 		{
 			await Task.Yield();
+
+			if (save.intList.Count != 2)
+				return false;
+
 			this.currentTargetCount = save.intList[0];
 			this.currentShovelCount = save.intList[1];
 			return true;
 		}
 
-		private SaveParameters CollectSaveField() => this.mapLoader.GetSave();
+		private SaveParameters CollectSaveField() => this.isGameEnabled ? this.mapLoader.GetSave() : null;
 
 		private async Task<bool> RestoreSaveField(SaveParameters save)
 		{

@@ -24,6 +24,8 @@ namespace Sangheli.Game
 
 		private Camera _camera;
 
+		private bool cellFinished;
+
 		public override void Init(ConfigCell configCell,int cellSize = -1)
 		{
 			this._camera = Camera.main;
@@ -45,6 +47,9 @@ namespace Sangheli.Game
 
 		void OnMouseDown()
 		{
+			if (this.cellFinished)
+				return;
+
 			if (EventSystem.current.IsPointerOverGameObject())
 				return;
 
@@ -55,12 +60,17 @@ namespace Sangheli.Game
 				return;
 
 			this.currentState--;
+
 			if (this.currentState < 1)
 			{
-				return;
+				this.currentState = 1;
+				this.cellFinished = true;
+			}
+			else
+			{
+				this.eventController.onCellClicked?.Invoke();
 			}
 
-			this.eventController.onCellClicked?.Invoke();
 			this.UpdateVisual(this.currentState);
 			this.CheckLayerForTarget();
 		}
@@ -132,6 +142,9 @@ namespace Sangheli.Game
 		public override void SetCurrentState(int index)
 		{
 			this.currentState = index;
+
+			if (this.currentState < 1)
+				this.currentState = 1;
 		}
 
 		public override void SetTargetLayer(int index)
@@ -142,6 +155,13 @@ namespace Sangheli.Game
 		public override void SetTargetCollected(int index)
 		{
 			this.targetCollected = index == 1; 
+		}
+
+		public override int GetCellFinished() => this.cellFinished ? 1 : 0;
+
+		public override void SetCellFinished(int index)
+		{
+			this.cellFinished = index == 1;
 		}
 
 		public override void InitCellSaveData()

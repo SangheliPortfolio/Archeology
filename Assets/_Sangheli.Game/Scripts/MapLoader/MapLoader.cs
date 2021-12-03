@@ -126,6 +126,9 @@ namespace Sangheli.Game
 			int sizeY = save.intList[1];
 			int count = save.intList[2];
 
+			if (save.intList.Count != 3 + count * 4)
+				return false;
+
 			List<AbstractCell> cellList = this.SpawnField(sizeX, sizeY);
 
 			if (count != cellList.Count)
@@ -133,12 +136,14 @@ namespace Sangheli.Game
 
 			int shift1 = 103;
 			int shift2 = 203;
+			int shift3 = 303;
 
 			for(int i = 0; i < count; i++)
 			{
 				cellList[i].SetCurrentState(save.intList[i + 3]);
 				cellList[i].SetTargetLayer(save.intList[i + shift1]);
 				cellList[i].SetTargetCollected(save.intList[i + shift2]);
+				cellList[i].SetCellFinished(save.intList[i + shift3]);
 				cellList[i].InitCellSaveData();
 			}
 
@@ -148,6 +153,9 @@ namespace Sangheli.Game
 		public override SaveParameters GetSave()
 		{
 			int count = this.configField.sizeX * this.configField.sizeY;
+
+			if (this.cellList == null || count != this.cellList.Count)
+				return null;
 
 			List<int> allData = new List<int>();
 
@@ -168,6 +176,11 @@ namespace Sangheli.Game
 			for (int i = 0; i < count; i++)
 			{
 				allData.Add(this.cellList[i].GetTargetCollected());
+			}
+
+			for (int i = 0; i < count; i++)
+			{
+				allData.Add(this.cellList[i].GetCellFinished());
 			}
 
 			SaveParameters save = new SaveParameters();
