@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sangheli.Event
 {
@@ -17,6 +18,7 @@ namespace Sangheli.Event
 		public System.Action onGameWin;
 		public System.Action onGameEnd;
 		public System.Action onGameReload;
+		public System.Func<Rect> getTargetRect;
 
 		public static EventController GetInstance()
 		{

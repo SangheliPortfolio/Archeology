@@ -29,6 +29,12 @@ namespace Sangheli.UI
 		private TMP_Text targetCounter;
 
 		[Space]
+		[Header("Target container")]
+
+		[SerializeField]
+		private RectTransform targetContainer;
+
+		[Space]
 		[Header("Game Canvas")]
 		[SerializeField]
 		private Canvas canvasGame;
@@ -47,6 +53,9 @@ namespace Sangheli.UI
 
 		private EventController eventController;
 
+		private bool targetRectReady;
+		private Rect targetRect;
+
 		private void Start()
 		{
 			this.eventController = EventController.GetInstance();
@@ -60,6 +69,8 @@ namespace Sangheli.UI
 
 			this.eventController.onGameWin += this.ShowGameWin;
 			this.eventController.onGameEnd += this.ShowGameLose;
+
+			this.eventController.getTargetRect += this.GetTargetRect;
 		}
 
 		private void OnDestroy()
@@ -73,6 +84,19 @@ namespace Sangheli.UI
 
 			this.eventController.onGameWin -= this.ShowGameWin;
 			this.eventController.onGameEnd -= this.ShowGameLose;
+
+			this.eventController.getTargetRect += this.GetTargetRect;
+		}
+
+		private Rect GetTargetRect()
+		{
+			if (!this.targetRectReady)
+			{
+				this.targetRect = new Rect(this.targetContainer.position, 
+					new Vector2(this.targetContainer.rect.width, this.targetContainer.rect.height));
+			}
+
+			return this.targetRect;
 		}
 
 		private void UpdateShovelCount(int count)
