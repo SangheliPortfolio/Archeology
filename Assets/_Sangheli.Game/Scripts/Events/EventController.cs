@@ -1,3 +1,4 @@
+using Sangheli.Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace Sangheli.Event
 		public System.Action onGameEnd;
 		public System.Action onGameReload;
 		public System.Func<Rect> getTargetRect;
+		public System.Func<Target> createTarget;
 
 		public static EventController GetInstance()
 		{

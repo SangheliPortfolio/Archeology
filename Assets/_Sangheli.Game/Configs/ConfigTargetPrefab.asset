@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27fbf5016b2bf7e44a6c7f5d60b62e14, type: 3}
-  m_Name: ConfigChance
+  m_Script: {fileID: 11500000, guid: 24e707e0eee34774e9d6ba214a4b6293, type: 3}
+  m_Name: ConfigTargetPrefab
   m_EditorClassIdentifier: 
-  minChanceForField: 0.4
-  maxChanceForField: 0.8
+  prefab: {fileID: 5224023365392440679, guid: 146687117fbac814d873ecc58b33c51a, type: 3}

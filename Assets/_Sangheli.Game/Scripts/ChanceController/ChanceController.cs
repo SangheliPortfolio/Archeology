@@ -8,16 +8,15 @@ namespace Sangheli.Game
 	public class ChanceController : ScriptableObject
 	{
 		[SerializeField]
+		private float minChanceForField;
+
+		[SerializeField]
 		private float maxChanceForField;
 
 		public float GetChanceForField()
 		{
 			float value = Random.value;
-
-			if (value > this.maxChanceForField)
-				value = maxChanceForField;
-
-			return value;
+			return Mathf.Clamp(value,this.minChanceForField, this.maxChanceForField);
 		}
 	}
 }
