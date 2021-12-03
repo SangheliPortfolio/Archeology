@@ -85,7 +85,7 @@ namespace Sangheli.UI
 			this.eventController.onGameWin -= this.ShowGameWin;
 			this.eventController.onGameEnd -= this.ShowGameLose;
 
-			this.eventController.getTargetRect += this.GetTargetRect;
+			this.eventController.getTargetRect -= this.GetTargetRect;
 		}
 
 		private Rect GetTargetRect()
@@ -94,6 +94,8 @@ namespace Sangheli.UI
 			{
 				this.targetRect = new Rect(this.targetContainer.position, 
 					new Vector2(this.targetContainer.rect.width, this.targetContainer.rect.height));
+
+				this.targetRectReady = true;
 			}
 
 			return this.targetRect;
