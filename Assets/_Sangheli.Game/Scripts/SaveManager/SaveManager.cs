@@ -28,7 +28,7 @@ namespace Sangheli.Save
 			this.eventController.onGameReload -= this.ResetSaves;
 		}
 
-		private async Task<bool> OnAppStart()
+		private bool OnAppStart()
 		{
 			if (this.eventController.restoreSaveGame == null || this.eventController.restoreSaveField == null)
 				return false;
@@ -39,8 +39,8 @@ namespace Sangheli.Save
 			if (saveGame == null || saveField == null)
 				return false;
 
-			bool resultGame = await this.eventController.restoreSaveGame?.Invoke(saveGame);
-			bool resultField = await this.eventController.restoreSaveField?.Invoke(saveField);
+			bool resultGame = this.eventController.restoreSaveGame.Invoke(saveGame);
+			bool resultField = this.eventController.restoreSaveField.Invoke(saveField);
 			return resultGame && resultField;
 		}
 

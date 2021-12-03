@@ -31,16 +31,14 @@ namespace Sangheli.Event
 		
 		public System.Func<Target> createTarget;
 		
-		public System.Func<Task<bool>> onAppStart;
+		public System.Func<bool> onAppStart;
 		public System.Action onAppQuit;
 
 		public System.Func<SaveParameters> writeSaveGame;
-		public System.Func<SaveParameters, Task<bool>> restoreSaveGame;
+		public System.Func<SaveParameters, bool> restoreSaveGame;
 
 		public System.Func<SaveParameters> writeSaveField;
-		public System.Func<SaveParameters, Task<bool>> restoreSaveField;
-
-		public System.Func<string,SaveParameters> getSaveGame2;
+		public System.Func<SaveParameters, bool> restoreSaveField;
 
 		public static EventController GetInstance()
 		{

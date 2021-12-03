@@ -78,9 +78,10 @@ namespace Sangheli.Game
 
 		private async void RestoreSaves()
 		{
+			await Task.Yield();
 			bool restored = false;
 			if (this.eventController.onAppStart != null)
-				restored = await this.eventController.onAppStart.Invoke();
+				restored = this.eventController.onAppStart.Invoke();
 
 			if (restored)
 			{
@@ -168,10 +169,8 @@ namespace Sangheli.Game
 			return save;
 		}
 
-		private async Task<bool> RestoreSaveData(SaveParameters save)
+		private bool RestoreSaveData(SaveParameters save)
 		{
-			await Task.Yield();
-
 			if (save.intList.Count != 2)
 				return false;
 
@@ -182,10 +181,6 @@ namespace Sangheli.Game
 
 		private SaveParameters CollectSaveField() => this.isGameEnabled ? this.mapLoader.GetSave() : null;
 
-		private async Task<bool> RestoreSaveField(SaveParameters save)
-		{
-			await Task.Yield();
-			return this.mapLoader.RestoreSave(save);
-		}
+		private bool RestoreSaveField(SaveParameters save) => this.mapLoader.RestoreSave(save);
 	}
 }
