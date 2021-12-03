@@ -1,4 +1,5 @@
 using Sangheli.Config;
+using Sangheli.Save;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,13 +32,25 @@ namespace Sangheli.Game
 
 		private List<AbstractCell> cellList;
 
+		private bool levelLoaded = false;
+
 		public override void SpawnField()
 		{
+			this.SpawnField(default,default);
+		}
+
+		public override List<AbstractCell> SpawnField(int _sizeX = -1,int _sizeY = -1)
+		{
+			if (this.levelLoaded)
+				return null;
+
+			this.levelLoaded = true;
+
 			this.cellList = new List<AbstractCell>();
 			this.zeroPoint.gameObject.SetActive(false);
 
-			int sizeX = this.configField.sizeX;
-			int sizeY = this.configField.sizeY;
+			int sizeX = _sizeX > 0 ? _sizeX : this.configField.sizeX;
+			int sizeY = _sizeY > 0 ? _sizeY : this.configField.sizeY;
 
 			Vector2 zeroPos = (Vector2)this.zeroPoint.position 
 				+ new Vector2(
@@ -64,6 +77,8 @@ namespace Sangheli.Game
 			}
 
 			this.SetTargetsToField(this.cellList);
+
+			return this.cellList;
 		}
 
 		private void SetTargetsToField(List<AbstractCell> cellList)
@@ -74,7 +89,7 @@ namespace Sangheli.Game
 			{
 				if(cellList.Count>id && cellList[id] != null)
 				{
-					cellList[id].SetTarget();
+					cellList[id].InitTarget();
 				}
 			}
 		}
@@ -100,6 +115,65 @@ namespace Sangheli.Game
 			}
 
 			return allWalues;
+		}
+
+		public override bool RestoreSave(SaveParameters save)
+		{
+			if (save.intList.Count < 3)
+				return false;
+
+			int sizeX = save.intList[0];
+			int sizeY = save.intList[1];
+			int count = save.intList[2];
+
+			List<AbstractCell> cellList = this.SpawnField(sizeX, sizeY);
+
+			if (count != cellList.Count)
+				return false;
+
+			int shift1 = 103;
+			int shift2 = 203;
+
+			for(int i = 0; i < count; i++)
+			{
+				cellList[i].SetCurrentState(save.intList[i + 3]);
+				cellList[i].SetTargetLayer(save.intList[i + shift1]);
+				cellList[i].SetTargetCollected(save.intList[i + shift2]);
+				cellList[i].InitCellSaveData();
+			}
+
+			return true;
+		}
+
+		public override SaveParameters GetSave()
+		{
+			int count = this.configField.sizeX * this.configField.sizeY;
+
+			List<int> allData = new List<int>();
+
+			allData.Add(this.configField.sizeX);
+			allData.Add(this.configField.sizeY);
+			allData.Add(count);
+
+			for (int i = 0; i < count; i++)
+			{
+				allData.Add(this.cellList[i].GetCurrentState());
+			}
+
+			for (int i = 0; i < count; i++)
+			{
+				allData.Add(this.cellList[i].GetTargetLayer());
+			}
+
+			for (int i = 0; i < count; i++)
+			{
+				allData.Add(this.cellList[i].GetTargetCollected());
+			}
+
+			SaveParameters save = new SaveParameters();
+			save.name = "field";
+			save.intList = allData;
+			return save;
 		}
 	}
 }

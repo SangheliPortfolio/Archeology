@@ -111,7 +111,7 @@ namespace Sangheli.Game
 			return false;
 		}
 
-		public override void SetTarget()
+		public override void InitTarget()
 		{
 			this.targetLayer = Random.Range(1, this.maxState);
 		}
@@ -121,6 +121,33 @@ namespace Sangheli.Game
 			this.targetCollected = true;
 			this.targetLayer = -1;
 			this.currentTarget.onCollect -= this.CollectTarget;
+		}
+
+		public override int GetCurrentState() => this.currentState;
+
+		public override int GetTargetLayer() => this.targetLayer;
+
+		public override int GetTargetCollected() => this.targetCollected ? 1 :0;
+
+		public override void SetCurrentState(int index)
+		{
+			this.currentState = index;
+		}
+
+		public override void SetTargetLayer(int index)
+		{
+			this.targetLayer = index;
+		}
+
+		public override void SetTargetCollected(int index)
+		{
+			this.targetCollected = index == 1; 
+		}
+
+		public override void InitCellSaveData()
+		{
+			this.UpdateVisual(this.currentState);
+			this.CheckLayerForTarget();
 		}
 	}
 }

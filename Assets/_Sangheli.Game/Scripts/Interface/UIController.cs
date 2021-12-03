@@ -63,6 +63,8 @@ namespace Sangheli.UI
 			this.buttonPlay.onClick.AddListener(()=> this.eventController.onStartGameClick?.Invoke());
 			this.buttonRestart.onClick.AddListener(() => this.eventController.onGameReload?.Invoke());
 			this.buttonRestart2.onClick.AddListener(() => this.eventController.onGameReload?.Invoke());
+			
+			this.buttonExit.onClick.AddListener(() => this.eventController.onQuitAppClick?.Invoke());
 
 			this.eventController.onShovelCountUpdate += this.UpdateShovelCount;
 			this.eventController.onTargetCountUpdate += this.UpdateTargeetCount;
