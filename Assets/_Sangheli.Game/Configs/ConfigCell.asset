@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0600529c41144554eb27825c28acba26, type: 3}
+  m_Name: ConfigCell
+  m_EditorClassIdentifier: 
+  cellStepCount: 3
+  cellSize: 0.8
+  noneSprite: {fileID: 21300000, guid: 4a64504a7ff451141afffffec533ef2a, type: 3}
+  spritesPerLayer:
+  - {fileID: 21300000, guid: dfa1269019bc74c4bb78ef9b255f748f, type: 3}
+  - {fileID: 21300000, guid: 1c9b7a6df3639da408d6674d476b4bc1, type: 3}
+  - {fileID: 21300000, guid: b5112d355f17ace4f82a91f00ee42d10, type: 3}
