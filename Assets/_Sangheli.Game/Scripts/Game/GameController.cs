@@ -81,11 +81,13 @@ namespace Sangheli.Game
 		private void EndGameWin()
 		{
 			this.isGameEnabled = false;
+			this.eventController.onGameWin?.Invoke();
 		}
 
 		private void EndGameLose()
 		{
 			this.isGameEnabled = false;
+			this.eventController.onGameEnd?.Invoke();
 		}
 
 		private void InitUI()

@@ -10,12 +10,11 @@ namespace Sangheli.UI
 	public class UIController : MonoBehaviour
 	{
 		[Header("Buttons")]
-
 		[SerializeField]
 		private Button buttonPlay;
 
 		[SerializeField]
-		private Button buttonRestart;
+		private Button buttonRestart2;
 
 		[SerializeField]
 		private Button buttonExit;
@@ -29,6 +28,22 @@ namespace Sangheli.UI
 		[SerializeField]
 		private TMP_Text targetCounter;
 
+		[Space]
+		[Header("Game Canvas")]
+		[SerializeField]
+		private Canvas canvasGame;
+
+		[Space]
+		[Header("End game canvas")]
+		[SerializeField]
+		private Canvas canvasEndGame;
+
+		[SerializeField]
+		private TMP_Text endGameText;
+
+		[SerializeField]
+		private Button buttonRestart;
+
 
 		private EventController eventController;
 
@@ -36,15 +51,28 @@ namespace Sangheli.UI
 		{
 			this.eventController = EventController.GetInstance();
 
-			this.buttonPlay.onClick.AddListener(()=>eventController.onStartGameClick?.Invoke());
+			this.buttonPlay.onClick.AddListener(()=> this.eventController.onStartGameClick?.Invoke());
+			this.buttonRestart.onClick.AddListener(() => this.eventController.onGameReload?.Invoke());
+			this.buttonRestart2.onClick.AddListener(() => this.eventController.onGameReload?.Invoke());
 
 			this.eventController.onShovelCountUpdate += this.UpdateShovelCount;
 			this.eventController.onTargetCountUpdate += this.UpdateTargeetCount;
+
+			this.eventController.onGameWin += this.ShowGameWin;
+			this.eventController.onGameEnd += this.ShowGameLose;
 		}
 
 		private void OnDestroy()
 		{
-			
+			this.buttonPlay.onClick.RemoveAllListeners();
+			this.buttonRestart.onClick.RemoveAllListeners();
+			this.buttonRestart2.onClick.RemoveAllListeners();
+
+			this.eventController.onShovelCountUpdate -= this.UpdateShovelCount;
+			this.eventController.onTargetCountUpdate -= this.UpdateTargeetCount;
+
+			this.eventController.onGameWin -= this.ShowGameWin;
+			this.eventController.onGameEnd -= this.ShowGameLose;
 		}
 
 		private void UpdateShovelCount(int count)
@@ -61,6 +89,23 @@ namespace Sangheli.UI
 				count = 0;
 
 			this.targetCounter.text = count.ToString();
+		}
+
+		private void ShowGameWin()
+		{
+			this.ShowEndPanel("Game Win");
+		}
+
+		private void ShowGameLose()
+		{
+			this.ShowEndPanel("Game Lose");
+		}
+
+		private void ShowEndPanel(string text)
+		{
+			this.endGameText.text = text;
+			this.canvasGame.gameObject.SetActive(false);
+			this.canvasEndGame.gameObject.SetActive(true);
 		}
 	}
 }
