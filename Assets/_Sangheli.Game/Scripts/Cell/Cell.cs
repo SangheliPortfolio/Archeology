@@ -72,7 +72,7 @@ namespace Sangheli.Game
 			}
 
 			this.UpdateVisual(this.currentState);
-			this.CheckLayerForTarget();
+			this.CreateTarget();
 		}
 
 		private bool IsGameEnabled()
@@ -89,7 +89,7 @@ namespace Sangheli.Game
 			return true;
 		}
 
-		private void CheckLayerForTarget()
+		private void CreateTarget()
 		{
 			if (!this.targetCollected && this.currentState == this.targetLayer)
 			{
@@ -167,7 +167,7 @@ namespace Sangheli.Game
 		public override void InitCellSaveData()
 		{
 			this.UpdateVisual(this.currentState);
-			this.CheckLayerForTarget();
+			this.CreateTarget();
 		}
 	}
 }

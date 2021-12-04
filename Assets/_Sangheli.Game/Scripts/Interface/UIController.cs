@@ -50,6 +50,12 @@ namespace Sangheli.UI
 		[SerializeField]
 		private Button buttonRestart;
 
+		[SerializeField]
+		private TMP_Text endGameShovelCount;
+
+		[SerializeField]
+		private TMP_Text endGameCoinCount;
+
 
 		private EventController eventController;
 
@@ -94,7 +100,7 @@ namespace Sangheli.UI
 		{
 			if (!this.targetRectReady)
 			{
-				this.targetRect = new Rect(this.targetContainer.position, 
+				this.targetRect = new Rect(this.targetContainer.position-new Vector3(this.targetContainer.rect.width/2,0), 
 					new Vector2(this.targetContainer.rect.width, this.targetContainer.rect.height));
 
 				this.targetRectReady = true;
@@ -119,21 +125,24 @@ namespace Sangheli.UI
 			this.targetCounter.text = count.ToString();
 		}
 
-		private void ShowGameWin()
+		private void ShowGameWin(int shovel,int coin)
 		{
-			this.ShowEndPanel("Game Win");
+			this.ShowEndPanel("Game Win", shovel, coin);
 		}
 
-		private void ShowGameLose()
+		private void ShowGameLose(int shovel, int coin)
 		{
-			this.ShowEndPanel("Game Lose");
+			this.ShowEndPanel("Game Lose",shovel,coin);
 		}
 
-		private void ShowEndPanel(string text)
+		private void ShowEndPanel(string text, int shovel, int coin)
 		{
 			this.endGameText.text = text;
 			this.canvasGame.gameObject.SetActive(false);
 			this.canvasEndGame.gameObject.SetActive(true);
+
+			this.endGameShovelCount.text = shovel.ToString();
+			this.endGameCoinCount.text = coin.ToString();
 		}
 	}
 }

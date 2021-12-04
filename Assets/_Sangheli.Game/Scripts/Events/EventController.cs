@@ -22,8 +22,8 @@ namespace Sangheli.Event
 		public System.Action onCellClicked;
 		
 		public System.Func<bool> isGameEnabled;
-		public System.Action onGameWin;
-		public System.Action onGameEnd;
+		public System.Action<int,int> onGameWin;
+		public System.Action<int, int> onGameEnd;
 		
 		public System.Action onGameReload;
 		

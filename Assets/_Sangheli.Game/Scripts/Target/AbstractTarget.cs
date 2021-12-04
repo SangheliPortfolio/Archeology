@@ -2,6 +2,7 @@ using Sangheli.Event;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace Sangheli.Game
@@ -18,9 +19,15 @@ namespace Sangheli.Game
 
 		private EventController eventController;
 
+		private Vector2 rectSize;
+		private Vector3 diffVector;
+
+
 		private void Start()
 		{
 			this.eventController = EventController.GetInstance();
+			this.rectSize = new Vector2(this.rectTransform.rect.width, this.rectTransform.rect.height);
+			this.diffVector = new Vector3(this.rectTransform.rect.width / 2, 0);
 		}
 
 		public void SetRectPosition(Vector2 pos)
@@ -53,8 +60,7 @@ namespace Sangheli.Game
 
 		public void OnEndDrag(PointerEventData eventData)
 		{
-			bool overlapTarget = IsOverlapTarget(this.rectTransform);
-
+			bool overlapTarget = this.IsOverlapTarget();
 			if (overlapTarget)
 			{
 				this.onCollect?.Invoke();
@@ -88,12 +94,12 @@ namespace Sangheli.Game
 			return isInside;
 		}
 
-		public static bool IsOverlapTarget(RectTransform rectTrans1)
+		private bool IsOverlapTarget()
 		{
 			System.Func<Rect> func = EventController.GetInstance().getTargetRect;
 			if (func != null)
 			{
-				Rect rect1 = new Rect(rectTrans1.position, new Vector2(rectTrans1.rect.width, rectTrans1.rect.height));
+				Rect rect1 = new Rect(this.rectTransform.position - this.diffVector, this.rectSize);
 				Rect rect2 = func.Invoke();
 				return rect1.Overlaps(rect2);
 			}

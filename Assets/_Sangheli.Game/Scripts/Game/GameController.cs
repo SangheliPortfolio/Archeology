@@ -121,13 +121,13 @@ namespace Sangheli.Game
 		private void EndGameWin()
 		{
 			this.isGameEnabled = false;
-			this.eventController.onGameWin?.Invoke();
+			this.eventController.onGameWin?.Invoke(this.currentShovelCount,this.currentTargetCount);
 		}
 
 		private void EndGameLose()
 		{
 			this.isGameEnabled = false;
-			this.eventController.onGameEnd?.Invoke();
+			this.eventController.onGameEnd?.Invoke(this.currentShovelCount, this.currentTargetCount);
 		}
 
 		private async void InitUI()

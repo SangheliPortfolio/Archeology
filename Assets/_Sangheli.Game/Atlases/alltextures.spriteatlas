@@ -50,13 +50,19 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: dfa1269019bc74c4bb78ef9b255f748f, type: 3}
+  - {fileID: 21300000, guid: 4b9de431353591f4c8dba24c86572e71, type: 3}
+  - {fileID: 21300000, guid: 40f9ad42e71905f47b977296bde12bb4, type: 3}
   - {fileID: 21300000, guid: b5112d355f17ace4f82a91f00ee42d10, type: 3}
+  - {fileID: 21300000, guid: 4cc1b778a6684ce409dce71d24c44a6b, type: 3}
   - {fileID: 21300000, guid: 4a64504a7ff451141afffffec533ef2a, type: 3}
   - {fileID: 21300000, guid: 865cd16c953eda34485d024addbec220, type: 3}
   - {fileID: 21300000, guid: 1c9b7a6df3639da408d6674d476b4bc1, type: 3}
   m_PackedSpriteNamesToIndex:
   - tile1
+  - tile4
+  - Coin
   - tile3
+  - bag
   - nosprite
   - shovel
   - tile2
