@@ -132,8 +132,12 @@ namespace Sangheli.Game
 
 		private async void InitUI()
 		{
+			if (this.isGameEnabled)
+				return;
+
 			await Task.Yield();
 			this.currentShovelCount = this.configGame.startShovelCounter;
+			this.currentTargetCount = 0;
 			this.UpdateShovelCount(this.currentShovelCount);
 			this.UpdateTargetCount(this.currentTargetCount);
 		}
