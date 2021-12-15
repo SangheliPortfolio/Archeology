@@ -75,7 +75,7 @@ namespace Sangheli.Game
         private async void RestoreSaves()
         {
             await Task.Yield();
-            bool restored = false;
+            var restored = false;
             if (eventController.onAppStart != null)
                 restored = eventController.onAppStart.Invoke();
 
@@ -98,18 +98,9 @@ namespace Sangheli.Game
         private void SpendShovel()
         {
             currentShovelCount--;
-
-            if (currentShovelCount < 0)
-            {
-                return;
-            }
-
+            if (currentShovelCount < 0) return;
             UpdateShovelCount(currentShovelCount);
-
-            if (currentShovelCount == 0)
-            {
-                EndGameLose();
-            }
+            if (currentShovelCount == 0) EndGameLose();
         }
 
         private void EndGameWin()
@@ -161,7 +152,7 @@ namespace Sangheli.Game
             if (!isGameEnabled)
                 return null;
 
-            SaveParameters save = new SaveParameters();
+            var save = new SaveParameters();
             save.name = "game";
             save.intList = new List<int> {currentTargetCount, currentShovelCount};
             return save;

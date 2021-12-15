@@ -66,13 +66,10 @@ namespace Sangheli.Save
 
         private SaveParameters GetParameters(string name)
         {
-            int count = PlayerPrefs.GetInt($"{name}_count");
-            List<int> allData = new List<int>();
+            var count = PlayerPrefs.GetInt($"{name}_count");
+            var allData = new List<int>();
 
-            for (var i = 0; i < count; i++)
-            {
-                allData.Add(PlayerPrefs.GetInt($"{name}_{i}"));
-            }
+            for (var i = 0; i < count; i++) allData.Add(PlayerPrefs.GetInt($"{name}_{i}"));
 
             var data = new SaveParameters();
             data.name = name;
@@ -85,10 +82,7 @@ namespace Sangheli.Save
         {
             PlayerPrefs.SetInt($"{save.name}_count", save.intList.Count);
 
-            for (var i = 0; i < save.intList.Count; i++)
-            {
-                PlayerPrefs.SetInt($"{save.name}_{i}", save.intList[i]);
-            }
+            for (var i = 0; i < save.intList.Count; i++) PlayerPrefs.SetInt($"{save.name}_{i}", save.intList[i]);
         }
     }
 }

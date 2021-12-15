@@ -44,7 +44,7 @@ namespace Sangheli.Game
             spriteRenderer.sprite = _configCell.GetSprite(state);
         }
 
-        void OnMouseDown()
+        private void OnMouseDown()
         {
             if (cellFinished)
                 return;
@@ -76,7 +76,7 @@ namespace Sangheli.Game
 
         private bool IsGameEnabled()
         {
-            Func<bool> func = eventController.isGameEnabled;
+            var func = eventController.isGameEnabled;
             return func == null || func.Invoke();
         }
 
@@ -84,7 +84,7 @@ namespace Sangheli.Game
         {
             if (targetCollected || currentState != targetLayer || currentTarget != null) return;
 
-            Func<Target> funcCreateTarget = eventController.createTarget;
+            var funcCreateTarget = eventController.createTarget;
             if (funcCreateTarget == null) return;
 
             currentTarget = funcCreateTarget.Invoke();
