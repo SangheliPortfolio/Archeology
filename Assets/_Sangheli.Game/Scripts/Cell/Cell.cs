@@ -1,7 +1,9 @@
+using System;
 using Sangheli.Config;
 using Sangheli.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Random = UnityEngine.Random;
 
 namespace Sangheli.Game
 {
@@ -10,7 +12,7 @@ namespace Sangheli.Game
 		[SerializeField]
 		private SpriteRenderer spriteRenderer;
 
-		private ConfigCell configCell;
+		private ConfigCell _configCell;
 		private int currentState;
 		private int maxState;
 
@@ -26,146 +28,124 @@ namespace Sangheli.Game
 
 		public override void Init(ConfigCell configCell,int cellSize = -1)
 		{
-			this._camera = Camera.main;
-			this.configCell = configCell;
-			this.eventController = EventController.GetInstance();
+			_camera = Camera.main;
+			_configCell = configCell;
+			eventController = EventController.GetInstance();
 
 			if (cellSize < 0 || cellSize > configCell.cellStepCount)
 				cellSize = configCell.cellStepCount;
 
-			this.maxState = cellSize;
-			this.currentState = cellSize;
-			this.UpdateVisual(this.currentState);
+			maxState = cellSize;
+			currentState = cellSize;
+			UpdateVisual(currentState);
 		}
 
 		public override void UpdateVisual(int state = -1)
 		{
-			this.spriteRenderer.sprite = this.configCell.GetSprite(state);
+			spriteRenderer.sprite = _configCell.GetSprite(state);
 		}
 
 		void OnMouseDown()
 		{
-			if (this.cellFinished)
+			if (cellFinished)
 				return;
 
 			if (EventSystem.current.IsPointerOverGameObject())
 				return;
 
-			if (!this.IsGameEnabled())
+			if (!IsGameEnabled())
 				return;
 
-			if (this.IsTargetActive())
+			if (IsTargetActive())
 				return;
 
-			this.currentState--;
+			currentState--;
 
-			if (this.currentState < 1)
+			if (currentState < 1)
 			{
-				this.currentState = 1;
-				this.cellFinished = true;
+				currentState = 1;
+				cellFinished = true;
 			}
 			else
 			{
-				this.eventController.onCellClicked?.Invoke();
+				eventController.onCellClicked?.Invoke();
 			}
 
-			this.UpdateVisual(this.currentState);
-			this.CreateTarget();
+			UpdateVisual(currentState);
+			CreateTarget();
 		}
 
 		private bool IsGameEnabled()
 		{
-			System.Func<bool> func = this.eventController.isGameEnabled;
-			if (func != null)
-			{
-				if (!func.Invoke())
-				{
-					return false;
-				}
-			}
-
-			return true;
+			Func<bool> func = eventController.isGameEnabled;
+			return func == null || func.Invoke();
 		}
 
 		private void CreateTarget()
 		{
-			if (!this.targetCollected && this.currentState == this.targetLayer)
-			{
-				if (this.currentTarget != null)
-					return;
+			if (targetCollected || currentState != targetLayer || currentTarget != null) return;
 
-				System.Func<Target> funcCreateTarget = this.eventController.createTarget;
-				if (funcCreateTarget != null)
-				{
-					this.currentTarget = funcCreateTarget.Invoke();
+			Func<Target> funcCreateTarget = eventController.createTarget;
+			if (funcCreateTarget == null) return;
+				
+			currentTarget = funcCreateTarget.Invoke();
 
-					var viewportPosition = this._camera.WorldToViewportPoint(transform.position);
-					var screenPos = this._camera.ViewportToScreenPoint(viewportPosition);
-					this.currentTarget.SetRectPosition(screenPos);
+			var viewportPosition = _camera.WorldToViewportPoint(transform.position);
+			var screenPos = _camera.ViewportToScreenPoint(viewportPosition);
+			currentTarget.SetRectPosition(screenPos);
 
-					this.currentTarget.onCollect += this.CollectTarget;
-				}
-			}
+			currentTarget.onCollect += CollectTarget;
 		}
 
-		private bool IsTargetActive()
-		{
-			if (!this.targetCollected && this.currentState == this.targetLayer)
-			{
-				if (this.currentTarget != null)
-					return true;
-			}
-
-			return false;
-		}
+		private bool IsTargetActive() => !targetCollected && currentState == targetLayer && currentTarget != null;
 
 		public override void InitTarget()
 		{
-			this.targetLayer = Random.Range(1, this.maxState);
+			targetLayer = Random.Range(1, maxState);
 		}
 
-		public void CollectTarget()
+		private void CollectTarget()
 		{
-			this.targetCollected = true;
-			this.targetLayer = -1;
-			this.currentTarget.onCollect -= this.CollectTarget;
+			targetCollected = true;
+			targetLayer = -1;
+			currentTarget.onCollect -= CollectTarget;
 		}
 
-		public override int GetCurrentState() => this.currentState;
+		public override int GetCurrentState() => currentState;
 
-		public override int GetTargetLayer() => this.targetLayer;
+		public override int GetTargetLayer() => targetLayer;
 
-		public override int GetTargetCollected() => this.targetCollected ? 1 :0;
+		public override int GetTargetCollected() => targetCollected ? 1 :0;
 
 		public override void SetCurrentState(int index)
 		{
-			this.currentState = index;
+			currentState = index;
 
-			if (this.currentState < 1)
-				this.currentState = 1;
+			if (currentState < 1)
+				currentState = 1;
 		}
 
 		public override void SetTargetLayer(int index)
 		{
-			this.targetLayer = index;
+			targetLayer = index;
 		}
 
 		public override void SetTargetCollected(int index)
 		{
-			this.targetCollected = index == 1; 
+			targetCollected = index == 1; 
 		}
 
-		public override int GetCellFinished() => this.cellFinished ? 1 : 0;
+		public override int GetCellFinished() => cellFinished ? 1 : 0;
 
 		public override void SetCellFinished(int index)
 		{
-			this.cellFinished = index == 1;
+			cellFinished = index == 1;
 		}
 
 		public override void InitCellSaveData()
 		{
-			this.UpdateVisual(this.currentState);
-			this.CreateTarget();
+			UpdateVisual(currentState);
+			CreateTarget();
 		}
 	}
 }

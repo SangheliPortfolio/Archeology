@@ -13,8 +13,8 @@ namespace Sangheli.Game
 
 		public float GetChanceForField()
 		{
-			float value = Random.value;
-			return Mathf.Clamp(value,this.minChanceForField, this.maxChanceForField);
+			var value = Random.value;
+			return Mathf.Clamp(value,minChanceForField, maxChanceForField);
 		}
 	}
 }

@@ -1,3 +1,4 @@
+using System;
 using Sangheli.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,7 +7,7 @@ namespace Sangheli.Game
 {
 	public class Target : MonoBehaviour, IBeginDragHandler,IDragHandler,IEndDragHandler
 	{
-		public System.Action onCollect;
+		public Action onCollect;
 
 		[SerializeField]
 		private RectTransform rectTransform;
@@ -22,51 +23,51 @@ namespace Sangheli.Game
 
 		private void Start()
 		{
-			this.eventController = EventController.GetInstance();
-			this.rectSize = new Vector2(this.rectTransform.rect.width, this.rectTransform.rect.height);
-			this.diffVector = new Vector3(this.rectTransform.rect.width / 2, 0);
+			eventController = EventController.GetInstance();
+			rectSize = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+			diffVector = new Vector3(rectTransform.rect.width / 2, 0);
 		}
 
 		public void SetRectPosition(Vector2 pos)
 		{
-			this.rectTransform.position = pos;
+			rectTransform.position = pos;
 		}
 
 		public void OnBeginDrag(PointerEventData eventData)
 		{
-			this.startPos = this.rectTransform.position;
-			this.lastMousePosition = eventData.position;
+			startPos = rectTransform.position;
+			lastMousePosition = eventData.position;
 		}
 
 		public void OnDrag(PointerEventData eventData)
 		{
 			Vector2 currentMousePosition = eventData.position;
-			Vector2 diff = currentMousePosition - this.lastMousePosition;
+			Vector2 diff = currentMousePosition - lastMousePosition;
 
-			Vector3 newPosition = this.rectTransform.position + new Vector3(diff.x, diff.y, transform.position.z);
-			Vector3 oldPos = this.rectTransform.position;
-			this.rectTransform.position = newPosition;
+			Vector3 newPosition = rectTransform.position + new Vector3(diff.x, diff.y, transform.position.z);
+			Vector3 oldPos = rectTransform.position;
+			rectTransform.position = newPosition;
 			
-			if (!IsRectTransformInsideSreen(this.rectTransform))
+			if (!IsRectTransformInsideSreen(rectTransform))
 			{
-				this.rectTransform.position = oldPos;
+				rectTransform.position = oldPos;
 			}
 
-			this.lastMousePosition = currentMousePosition;
+			lastMousePosition = currentMousePosition;
 		}
 
 		public void OnEndDrag(PointerEventData eventData)
 		{
-			bool overlapTarget = this.IsOverlapTarget();
+			bool overlapTarget = IsOverlapTarget();
 			if (overlapTarget)
 			{
-				this.onCollect?.Invoke();
-				this.eventController.onCollectTarget?.Invoke();
+				onCollect?.Invoke();
+				eventController.onCollectTarget?.Invoke();
 				gameObject.SetActive(false);
 			}
 			else
 			{
-				this.rectTransform.position = this.startPos;
+				rectTransform.position = startPos;
 			}
 		}
 
@@ -93,10 +94,10 @@ namespace Sangheli.Game
 
 		private bool IsOverlapTarget()
 		{
-			System.Func<Rect> func = EventController.GetInstance().getTargetRect;
+			Func<Rect> func = EventController.GetInstance().getTargetRect;
 			if (func != null)
 			{
-				Rect rect1 = new Rect(this.rectTransform.position - this.diffVector, this.rectSize);
+				Rect rect1 = new Rect(rectTransform.position - diffVector, rectSize);
 				Rect rect2 = func.Invoke();
 				return rect1.Overlaps(rect2);
 			}

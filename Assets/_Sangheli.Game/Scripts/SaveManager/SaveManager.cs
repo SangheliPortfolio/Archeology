@@ -1,5 +1,6 @@
-using Sangheli.Event;
+using System;
 using System.Collections.Generic;
+using Sangheli.Event;
 using UnityEngine;
 
 namespace Sangheli.Save
@@ -10,49 +11,49 @@ namespace Sangheli.Save
 
 		private void Start()
 		{
-			this.eventController = EventController.GetInstance();
+			eventController = EventController.GetInstance();
 
-			this.eventController.onAppStart += this.OnAppStart;
-			this.eventController.onAppQuit += this.OnAppQuit;
+			eventController.onAppStart += OnAppStart;
+			eventController.onAppQuit += OnAppQuit;
 
-			this.eventController.onGameReload += this.ResetSaves;
+			eventController.onGameReload += ResetSaves;
 		}
 
 		private void OnDestroy()
 		{
-			this.eventController.onAppStart -= this.OnAppStart;
-			this.eventController.onAppQuit -= this.OnAppQuit;
+			eventController.onAppStart -= OnAppStart;
+			eventController.onAppQuit -= OnAppQuit;
 
-			this.eventController.onGameReload -= this.ResetSaves;
+			eventController.onGameReload -= ResetSaves;
 		}
 
 		private bool OnAppStart()
 		{
-			if (this.eventController.restoreSaveGame == null || this.eventController.restoreSaveField == null)
+			if (eventController.restoreSaveGame == null || eventController.restoreSaveField == null)
 				return false;
 
-			var saveGame = this.GetParameters("game");
-			var saveField = this.GetParameters("field");
+			var saveGame = GetParameters("game");
+			var saveField = GetParameters("field");
 
 			if (saveGame == null || saveField == null)
 				return false;
 
-			bool resultGame = this.eventController.restoreSaveGame.Invoke(saveGame);
-			bool resultField = this.eventController.restoreSaveField.Invoke(saveField);
+			var resultGame = eventController.restoreSaveGame.Invoke(saveGame);
+			var resultField = eventController.restoreSaveField.Invoke(saveField);
 			return resultGame && resultField;
 		}
 
 		private void OnAppQuit()
 		{
-			var saveGame = this.eventController.writeSaveGame?.Invoke();
-			var saveField = this.eventController.writeSaveField?.Invoke();
+			var saveGame = eventController.writeSaveGame?.Invoke();
+			var saveField = eventController.writeSaveField?.Invoke();
 
 			if (saveGame != null && saveField != null)
 			{
-				this.ResetSaves();
+				ResetSaves();
 
-				this.SetParameters(saveGame);
-				this.SetParameters(saveField);
+				SetParameters(saveGame);
+				SetParameters(saveField);
 
 				PlayerPrefs.Save();
 			}
@@ -65,12 +66,12 @@ namespace Sangheli.Save
 
 		private SaveParameters GetParameters(string name)
 		{
-			int count = PlayerPrefs.GetInt(name + "_count");
+			int count = PlayerPrefs.GetInt($"{name}_count");
 			List<int> allData = new List<int>();
 			
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 			{
-				allData.Add(PlayerPrefs.GetInt(name + "_" + i));
+				allData.Add(PlayerPrefs.GetInt($"{name}_{i}"));
 			}
 
 			var data = new SaveParameters();
@@ -82,11 +83,11 @@ namespace Sangheli.Save
 
 		private void SetParameters(SaveParameters save)
 		{
-			PlayerPrefs.SetInt(save.name +"_count",save.intList.Count);
+			PlayerPrefs.SetInt($"{save.name}_count",save.intList.Count);
 
-			for(int i = 0; i < save.intList.Count; i++)
+			for(var i = 0; i < save.intList.Count; i++)
 			{
-				PlayerPrefs.SetInt(save.name + "_"+i, save.intList[i]);
+				PlayerPrefs.SetInt($"{save.name}_{i}", save.intList[i]);
 			}
 		}
 	}

@@ -10,14 +10,14 @@ namespace Sangheli.Game
 
 		private void Start()
 		{
-			this.eventController = EventController.GetInstance();
+			eventController = EventController.GetInstance();
 
-			this.eventController.onGameReload += this.ReloadScene;
+			eventController.onGameReload += ReloadScene;
 		}
 
 		private void OnDestroy()
 		{
-			this.eventController.onGameReload -= this.ReloadScene;
+			eventController.onGameReload -= ReloadScene;
 		}
 
 		public void ReloadScene()

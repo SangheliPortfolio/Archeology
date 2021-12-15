@@ -17,19 +17,19 @@ namespace Sangheli.Factory
 
 		private void Start()
 		{
-			this.eventController = EventController.GetInstance();
+			eventController = EventController.GetInstance();
 
-			this.eventController.createTarget += this.CreateTarget;
+			eventController.createTarget += CreateTarget;
 		}
 
 		private void OnDestroy()
 		{
-			this.eventController.createTarget -= this.CreateTarget;
+			eventController.createTarget -= CreateTarget;
 		}
 
 		private Target CreateTarget()
 		{
-			return Instantiate(this.configTargetPrefab.prefab, Vector3.zero, Quaternion.identity,this.parentContainer);
+			return Instantiate(configTargetPrefab.prefab, Vector3.zero, Quaternion.identity,parentContainer);
 		}
 	}
 }

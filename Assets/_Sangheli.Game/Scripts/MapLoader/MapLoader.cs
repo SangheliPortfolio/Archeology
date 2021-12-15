@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using Sangheli.Config;
 using Sangheli.Save;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Sangheli.Game
@@ -30,58 +30,58 @@ namespace Sangheli.Game
 
 		private List<AbstractCell> cellList;
 
-		private bool levelLoaded = false;
+		private bool levelLoaded;
 
 		public override void SpawnField()
 		{
-			this.SpawnField(default,default);
+			SpawnField(default,default);
 		}
 
-		public override List<AbstractCell> SpawnField(int _sizeX = -1,int _sizeY = -1)
+		public override List<AbstractCell> SpawnField(int sizeX = -1,int sizeY = -1)
 		{
-			if (this.levelLoaded)
+			if (levelLoaded)
 				return null;
 
-			this.levelLoaded = true;
+			levelLoaded = true;
 
-			this.cellList = new List<AbstractCell>();
-			this.zeroPoint.gameObject.SetActive(false);
+			cellList = new List<AbstractCell>();
+			zeroPoint.gameObject.SetActive(false);
 
-			int sizeX = _sizeX > 0 ? _sizeX : this.configField.sizeX;
-			int sizeY = _sizeY > 0 ? _sizeY : this.configField.sizeY;
+			sizeX = sizeX > 0 ? sizeX : configField.sizeX;
+			sizeY = sizeY > 0 ? sizeY : configField.sizeY;
 
-			Vector2 zeroPos = (Vector2)this.zeroPoint.position 
+			Vector2 zeroPos = (Vector2)zeroPoint.position 
 				+ new Vector2(
-					- (this.configField.sizeX* this.configCell.cellSize) / 2,
-				- (this.configField.sizeY* this.configCell.cellSize) / 2);
+					- (configField.sizeX* configCell.cellSize) / 2,
+				- (configField.sizeY* configCell.cellSize) / 2);
 
-			Vector3 scale = new Vector3(this.configCell.cellSize, this.configCell.cellSize, 1);
+			Vector3 scale = new Vector3(configCell.cellSize, configCell.cellSize, 1);
 
-			AbstractCell cellPrefab = this.configCellPrefab.cellPrefab;
+			AbstractCell cellPrefab = configCellPrefab.cellPrefab;
 
 			for (int x = 0; x < sizeX; x++)
 			{
 				for (int y = 0; y < sizeY; y++)
 				{
 					Vector2 pos = zeroPos + new Vector2(
-						this.configCell.cellSize * x,
-						this.configCell.cellSize * y);
+						configCell.cellSize * x,
+						configCell.cellSize * y);
 
-					AbstractCell newCell = Instantiate(cellPrefab, pos,Quaternion.identity, this.fieldParent);
+					AbstractCell newCell = Instantiate(cellPrefab, pos,Quaternion.identity, fieldParent);
 					newCell.transform.localScale = scale;
-					this.cellList.Add(newCell);
-					newCell.Init(this.configCell);
+					cellList.Add(newCell);
+					newCell.Init(configCell);
 				}
 			}
 
-			this.SetTargetsToField(this.cellList);
+			SetTargetsToField(cellList);
 
-			return this.cellList;
+			return cellList;
 		}
 
 		private void SetTargetsToField(List<AbstractCell> cellList)
 		{
-			List<int> idlist = this.GetCellListWithTarget();
+			List<int> idlist = GetCellListWithTarget();
 
 			foreach(int id in idlist)
 			{
@@ -94,8 +94,8 @@ namespace Sangheli.Game
 
 		private List<int> GetCellListWithTarget()
 		{
-			float targetFieldChance = this.chanceController.GetChanceForField();
-			float max = this.configField.sizeX * this.configField.sizeY;
+			float targetFieldChance = chanceController.GetChanceForField();
+			float max = configField.sizeX * configField.sizeY;
 
 			int cellsWithTarget = (int)(max * targetFieldChance);
 			int diff = (int)max - cellsWithTarget;
@@ -127,7 +127,7 @@ namespace Sangheli.Game
 			if (save.intList.Count != 3 + count * 4)
 				return false;
 
-			List<AbstractCell> cellList = this.SpawnField(sizeX, sizeY);
+			List<AbstractCell> cellList = SpawnField(sizeX, sizeY);
 
 			if (count != cellList.Count)
 				return false;
@@ -150,35 +150,35 @@ namespace Sangheli.Game
 
 		public override SaveParameters GetSave()
 		{
-			int count = this.configField.sizeX * this.configField.sizeY;
+			int count = configField.sizeX * configField.sizeY;
 
-			if (this.cellList == null || count != this.cellList.Count)
+			if (cellList == null || count != cellList.Count)
 				return null;
 
 			List<int> allData = new List<int>();
 
-			allData.Add(this.configField.sizeX);
-			allData.Add(this.configField.sizeY);
+			allData.Add(configField.sizeX);
+			allData.Add(configField.sizeY);
 			allData.Add(count);
 
 			for (int i = 0; i < count; i++)
 			{
-				allData.Add(this.cellList[i].GetCurrentState());
+				allData.Add(cellList[i].GetCurrentState());
 			}
 
 			for (int i = 0; i < count; i++)
 			{
-				allData.Add(this.cellList[i].GetTargetLayer());
+				allData.Add(cellList[i].GetTargetLayer());
 			}
 
 			for (int i = 0; i < count; i++)
 			{
-				allData.Add(this.cellList[i].GetTargetCollected());
+				allData.Add(cellList[i].GetTargetCollected());
 			}
 
 			for (int i = 0; i < count; i++)
 			{
-				allData.Add(this.cellList[i].GetCellFinished());
+				allData.Add(cellList[i].GetCellFinished());
 			}
 
 			SaveParameters save = new SaveParameters();

@@ -1,3 +1,4 @@
+using System;
 using Sangheli.Game;
 using Sangheli.Save;
 using UnityEngine;
@@ -6,42 +7,36 @@ namespace Sangheli.Event
 {
 	public class EventController
 	{
-		private static EventController Instance;
+		private static EventController _instance;
 
-		public System.Action onStartGameClick;
-		public System.Action onQuitAppClick;
+		public Action onStartGameClick;
+		public Action onQuitAppClick;
 
-		public System.Action<int> onShovelCountUpdate;
-		public System.Action<int> onTargetCountUpdate;
+		public Action<int> onShovelCountUpdate;
+		public Action<int> onTargetCountUpdate;
 		
-		public System.Action onCollectTarget;
-		public System.Action onCellClicked;
+		public Action onCollectTarget;
+		public Action onCellClicked;
 		
-		public System.Func<bool> isGameEnabled;
-		public System.Action<int,int> onGameWin;
-		public System.Action<int, int> onGameEnd;
+		public Func<bool> isGameEnabled;
+		public Action<int,int> onGameWin;
+		public Action<int, int> onGameEnd;
 		
-		public System.Action onGameReload;
+		public Action onGameReload;
 		
-		public System.Func<Rect> getTargetRect;
+		public Func<Rect> getTargetRect;
 		
-		public System.Func<Target> createTarget;
+		public Func<Target> createTarget;
 		
-		public System.Func<bool> onAppStart;
-		public System.Action onAppQuit;
+		public Func<bool> onAppStart;
+		public Action onAppQuit;
 
-		public System.Func<SaveParameters> writeSaveGame;
-		public System.Func<SaveParameters, bool> restoreSaveGame;
+		public Func<SaveParameters> writeSaveGame;
+		public Func<SaveParameters, bool> restoreSaveGame;
 
-		public System.Func<SaveParameters> writeSaveField;
-		public System.Func<SaveParameters, bool> restoreSaveField;
+		public Func<SaveParameters> writeSaveField;
+		public Func<SaveParameters, bool> restoreSaveField;
 
-		public static EventController GetInstance()
-		{
-			if (Instance == null)
-				Instance = new EventController();
-
-			return Instance;
-		}
+		public static EventController GetInstance() => _instance ??= new EventController();
 	}
 }

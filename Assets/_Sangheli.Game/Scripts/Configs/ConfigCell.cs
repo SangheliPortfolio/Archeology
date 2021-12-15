@@ -20,22 +20,8 @@ namespace Sangheli.Config
 
 		public Sprite GetSprite(int layerindex = -1)
 		{
-			if (layerindex <= 0)
-				return this.noneSprite;
-
-			if (layerindex <= this.spritesPerLayer.Length)
-			{
-				if (this.spritesPerLayer[layerindex-1] != null)
-				{
-					return this.spritesPerLayer[layerindex-1];
-				}
-				else
-				{
-					return this.noneSprite;
-				}
-			}
-
-			return this.noneSprite;
+			if (layerindex <= 0 || layerindex > spritesPerLayer.Length) return noneSprite;
+			return spritesPerLayer[layerindex-1] != null ? spritesPerLayer[layerindex-1] : noneSprite;
 		}
 	}
 }

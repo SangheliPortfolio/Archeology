@@ -1,7 +1,7 @@
 using Sangheli.Event;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 namespace Sangheli.UI
 {
@@ -62,49 +62,49 @@ namespace Sangheli.UI
 
 		private void Start()
 		{
-			this.eventController = EventController.GetInstance();
+			eventController = EventController.GetInstance();
 
-			this.buttonPlay.onClick.AddListener(()=> this.eventController.onStartGameClick?.Invoke());
-			this.buttonRestart.onClick.AddListener(() => this.eventController.onGameReload?.Invoke());
-			this.buttonRestart2.onClick.AddListener(() => this.eventController.onGameReload?.Invoke());
+			buttonPlay.onClick.AddListener(()=> eventController.onStartGameClick?.Invoke());
+			buttonRestart.onClick.AddListener(() => eventController.onGameReload?.Invoke());
+			buttonRestart2.onClick.AddListener(() => eventController.onGameReload?.Invoke());
 			
-			this.buttonExit.onClick.AddListener(() => this.eventController.onQuitAppClick?.Invoke());
+			buttonExit.onClick.AddListener(() => eventController.onQuitAppClick?.Invoke());
 
-			this.eventController.onShovelCountUpdate += this.UpdateShovelCount;
-			this.eventController.onTargetCountUpdate += this.UpdateTargeetCount;
+			eventController.onShovelCountUpdate += UpdateShovelCount;
+			eventController.onTargetCountUpdate += UpdateTargeetCount;
 
-			this.eventController.onGameWin += this.ShowGameWin;
-			this.eventController.onGameEnd += this.ShowGameLose;
+			eventController.onGameWin += ShowGameWin;
+			eventController.onGameEnd += ShowGameLose;
 
-			this.eventController.getTargetRect += this.GetTargetRect;
+			eventController.getTargetRect += GetTargetRect;
 		}
 
 		private void OnDestroy()
 		{
-			this.buttonPlay.onClick.RemoveAllListeners();
-			this.buttonRestart.onClick.RemoveAllListeners();
-			this.buttonRestart2.onClick.RemoveAllListeners();
+			buttonPlay.onClick.RemoveAllListeners();
+			buttonRestart.onClick.RemoveAllListeners();
+			buttonRestart2.onClick.RemoveAllListeners();
 
-			this.eventController.onShovelCountUpdate -= this.UpdateShovelCount;
-			this.eventController.onTargetCountUpdate -= this.UpdateTargeetCount;
+			eventController.onShovelCountUpdate -= UpdateShovelCount;
+			eventController.onTargetCountUpdate -= UpdateTargeetCount;
 
-			this.eventController.onGameWin -= this.ShowGameWin;
-			this.eventController.onGameEnd -= this.ShowGameLose;
+			eventController.onGameWin -= ShowGameWin;
+			eventController.onGameEnd -= ShowGameLose;
 
-			this.eventController.getTargetRect -= this.GetTargetRect;
+			eventController.getTargetRect -= GetTargetRect;
 		}
 
 		private Rect GetTargetRect()
 		{
-			if (!this.targetRectReady)
+			if (!targetRectReady)
 			{
-				this.targetRect = new Rect(this.targetContainer.position-new Vector3(this.targetContainer.rect.width/2,0), 
-					new Vector2(this.targetContainer.rect.width, this.targetContainer.rect.height));
+				targetRect = new Rect(targetContainer.position-new Vector3(targetContainer.rect.width/2,0), 
+					new Vector2(targetContainer.rect.width, targetContainer.rect.height));
 
-				this.targetRectReady = true;
+				targetRectReady = true;
 			}
 
-			return this.targetRect;
+			return targetRect;
 		}
 
 		private void UpdateShovelCount(int count)
@@ -112,7 +112,7 @@ namespace Sangheli.UI
 			if (count <= 0)
 				count = 0;
 
-			this.shovelCounter.text = count.ToString();
+			shovelCounter.text = count.ToString();
 		}
 
 		private void UpdateTargeetCount(int count)
@@ -120,27 +120,27 @@ namespace Sangheli.UI
 			if (count <= 0)
 				count = 0;
 
-			this.targetCounter.text = count.ToString();
+			targetCounter.text = count.ToString();
 		}
 
 		private void ShowGameWin(int shovel,int coin)
 		{
-			this.ShowEndPanel("Game Win", shovel, coin);
+			ShowEndPanel("Game Win", shovel, coin);
 		}
 
 		private void ShowGameLose(int shovel, int coin)
 		{
-			this.ShowEndPanel("Game Lose",shovel,coin);
+			ShowEndPanel("Game Lose",shovel,coin);
 		}
 
 		private void ShowEndPanel(string text, int shovel, int coin)
 		{
-			this.endGameText.text = text;
-			this.canvasGame.gameObject.SetActive(false);
-			this.canvasEndGame.gameObject.SetActive(true);
+			endGameText.text = text;
+			canvasGame.gameObject.SetActive(false);
+			canvasEndGame.gameObject.SetActive(true);
 
-			this.endGameShovelCount.text = shovel.ToString();
-			this.endGameCoinCount.text = coin.ToString();
+			endGameShovelCount.text = shovel.ToString();
+			endGameCoinCount.text = coin.ToString();
 		}
 	}
 }
