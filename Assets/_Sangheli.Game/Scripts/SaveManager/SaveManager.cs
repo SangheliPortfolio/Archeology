@@ -5,90 +5,90 @@ using UnityEngine;
 
 namespace Sangheli.Save
 {
-	public class SaveManager : MonoBehaviour
-	{
-		private EventController eventController;
+    public class SaveManager : MonoBehaviour
+    {
+        private EventController eventController;
 
-		private void Start()
-		{
-			eventController = EventController.GetInstance();
+        private void Start()
+        {
+            eventController = EventController.GetInstance();
 
-			eventController.onAppStart += OnAppStart;
-			eventController.onAppQuit += OnAppQuit;
+            eventController.onAppStart += OnAppStart;
+            eventController.onAppQuit += OnAppQuit;
 
-			eventController.onGameReload += ResetSaves;
-		}
+            eventController.onGameReload += ResetSaves;
+        }
 
-		private void OnDestroy()
-		{
-			eventController.onAppStart -= OnAppStart;
-			eventController.onAppQuit -= OnAppQuit;
+        private void OnDestroy()
+        {
+            eventController.onAppStart -= OnAppStart;
+            eventController.onAppQuit -= OnAppQuit;
 
-			eventController.onGameReload -= ResetSaves;
-		}
+            eventController.onGameReload -= ResetSaves;
+        }
 
-		private bool OnAppStart()
-		{
-			if (eventController.restoreSaveGame == null || eventController.restoreSaveField == null)
-				return false;
+        private bool OnAppStart()
+        {
+            if (eventController.restoreSaveGame == null || eventController.restoreSaveField == null)
+                return false;
 
-			var saveGame = GetParameters("game");
-			var saveField = GetParameters("field");
+            var saveGame = GetParameters("game");
+            var saveField = GetParameters("field");
 
-			if (saveGame == null || saveField == null)
-				return false;
+            if (saveGame == null || saveField == null)
+                return false;
 
-			var resultGame = eventController.restoreSaveGame.Invoke(saveGame);
-			var resultField = eventController.restoreSaveField.Invoke(saveField);
-			return resultGame && resultField;
-		}
+            var resultGame = eventController.restoreSaveGame.Invoke(saveGame);
+            var resultField = eventController.restoreSaveField.Invoke(saveField);
+            return resultGame && resultField;
+        }
 
-		private void OnAppQuit()
-		{
-			var saveGame = eventController.writeSaveGame?.Invoke();
-			var saveField = eventController.writeSaveField?.Invoke();
+        private void OnAppQuit()
+        {
+            var saveGame = eventController.writeSaveGame?.Invoke();
+            var saveField = eventController.writeSaveField?.Invoke();
 
-			if (saveGame != null && saveField != null)
-			{
-				ResetSaves();
+            if (saveGame != null && saveField != null)
+            {
+                ResetSaves();
 
-				SetParameters(saveGame);
-				SetParameters(saveField);
+                SetParameters(saveGame);
+                SetParameters(saveField);
 
-				PlayerPrefs.Save();
-			}
-		}
+                PlayerPrefs.Save();
+            }
+        }
 
-		private void ResetSaves()
-		{
-			PlayerPrefs.DeleteAll();
-		}
+        private void ResetSaves()
+        {
+            PlayerPrefs.DeleteAll();
+        }
 
-		private SaveParameters GetParameters(string name)
-		{
-			int count = PlayerPrefs.GetInt($"{name}_count");
-			List<int> allData = new List<int>();
-			
-			for (var i = 0; i < count; i++)
-			{
-				allData.Add(PlayerPrefs.GetInt($"{name}_{i}"));
-			}
+        private SaveParameters GetParameters(string name)
+        {
+            int count = PlayerPrefs.GetInt($"{name}_count");
+            List<int> allData = new List<int>();
 
-			var data = new SaveParameters();
-			data.name = name;
-			data.intList = allData;
+            for (var i = 0; i < count; i++)
+            {
+                allData.Add(PlayerPrefs.GetInt($"{name}_{i}"));
+            }
 
-			return data;
-		}
+            var data = new SaveParameters();
+            data.name = name;
+            data.intList = allData;
 
-		private void SetParameters(SaveParameters save)
-		{
-			PlayerPrefs.SetInt($"{save.name}_count",save.intList.Count);
+            return data;
+        }
 
-			for(var i = 0; i < save.intList.Count; i++)
-			{
-				PlayerPrefs.SetInt($"{save.name}_{i}", save.intList[i]);
-			}
-		}
-	}
+        private void SetParameters(SaveParameters save)
+        {
+            PlayerPrefs.SetInt($"{save.name}_count", save.intList.Count);
+
+            for (var i = 0; i < save.intList.Count; i++)
+            {
+                PlayerPrefs.SetInt($"{save.name}_{i}", save.intList[i]);
+            }
+        }
+    }
 }

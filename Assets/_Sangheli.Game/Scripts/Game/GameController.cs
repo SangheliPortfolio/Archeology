@@ -7,180 +7,178 @@ using UnityEngine;
 
 namespace Sangheli.Game
 {
-	public class GameController : MonoBehaviour
-	{
-		[SerializeField]
-		private AbstractMapLoader mapLoader;
+    public class GameController : MonoBehaviour
+    {
+        [SerializeField] private AbstractMapLoader mapLoader;
 
-		[SerializeField]
-		private ConfigGame configGame;
+        [SerializeField] private ConfigGame configGame;
 
-		private EventController eventController;
+        private EventController eventController;
 
-		private int currentTargetCount;
-		private int currentShovelCount;
+        private int currentTargetCount;
+        private int currentShovelCount;
 
-		private bool isGameEnabled;
+        private bool isGameEnabled;
 
-		private void Awake()
-		{
-			eventController = EventController.GetInstance();
-		}
+        private void Awake()
+        {
+            eventController = EventController.GetInstance();
+        }
 
-		private void Start()
-		{
-			eventController.onStartGameClick += mapLoader.SpawnField;
-			eventController.onStartGameClick += InitUI;
-			eventController.onStartGameClick += StartGame;
+        private void Start()
+        {
+            eventController.onStartGameClick += mapLoader.SpawnField;
+            eventController.onStartGameClick += InitUI;
+            eventController.onStartGameClick += StartGame;
 
-			eventController.onQuitAppClick += QuitApp;
-			
-			eventController.onCollectTarget += CollectTarget;
-			eventController.onCellClicked += SpendShovel;
+            eventController.onQuitAppClick += QuitApp;
 
-			eventController.isGameEnabled += () => isGameEnabled;
+            eventController.onCollectTarget += CollectTarget;
+            eventController.onCellClicked += SpendShovel;
 
-			eventController.writeSaveGame += CollectSaveGame;
-			eventController.restoreSaveGame += RestoreSaveData;
+            eventController.isGameEnabled += () => isGameEnabled;
 
-			eventController.writeSaveField += CollectSaveField;
-			eventController.restoreSaveField += RestoreSaveField;
+            eventController.writeSaveGame += CollectSaveGame;
+            eventController.restoreSaveGame += RestoreSaveData;
 
-			RestoreSaves();
-		}
+            eventController.writeSaveField += CollectSaveField;
+            eventController.restoreSaveField += RestoreSaveField;
 
-		private void OnDestroy()
-		{
-			eventController.onStartGameClick -= mapLoader.SpawnField;
-			eventController.onStartGameClick -= InitUI;
-			eventController.onStartGameClick -= StartGame;
+            RestoreSaves();
+        }
 
-			eventController.onQuitAppClick -= QuitApp;
+        private void OnDestroy()
+        {
+            eventController.onStartGameClick -= mapLoader.SpawnField;
+            eventController.onStartGameClick -= InitUI;
+            eventController.onStartGameClick -= StartGame;
 
-			eventController.onCollectTarget -= CollectTarget;
-			eventController.onCellClicked -= SpendShovel;
+            eventController.onQuitAppClick -= QuitApp;
 
-			eventController.isGameEnabled -= () => isGameEnabled;
+            eventController.onCollectTarget -= CollectTarget;
+            eventController.onCellClicked -= SpendShovel;
 
-			eventController.writeSaveGame -= CollectSaveGame;
-			eventController.restoreSaveGame -= RestoreSaveData;
+            eventController.isGameEnabled -= () => isGameEnabled;
 
-			eventController.writeSaveField -= CollectSaveField;
-			eventController.restoreSaveField -= RestoreSaveField;
-		}
+            eventController.writeSaveGame -= CollectSaveGame;
+            eventController.restoreSaveGame -= RestoreSaveData;
 
-		private void StartGame()
-		{
-			isGameEnabled = true;
-		}
+            eventController.writeSaveField -= CollectSaveField;
+            eventController.restoreSaveField -= RestoreSaveField;
+        }
 
-		private async void RestoreSaves()
-		{
-			await Task.Yield();
-			bool restored = false;
-			if (eventController.onAppStart != null)
-				restored = eventController.onAppStart.Invoke();
+        private void StartGame()
+        {
+            isGameEnabled = true;
+        }
 
-			if (!restored) return;
-			
-			UpdateShovelCount(currentShovelCount);
-			UpdateTargetCount(currentTargetCount);
-			isGameEnabled = true;
-		}
+        private async void RestoreSaves()
+        {
+            await Task.Yield();
+            bool restored = false;
+            if (eventController.onAppStart != null)
+                restored = eventController.onAppStart.Invoke();
 
-		private void CollectTarget()
-		{
-			currentTargetCount++;
-			UpdateTargetCount(currentTargetCount);
+            if (!restored) return;
 
-			if (currentTargetCount >= configGame.maxTargetCount)
-				EndGameWin();
-		}
+            UpdateShovelCount(currentShovelCount);
+            UpdateTargetCount(currentTargetCount);
+            isGameEnabled = true;
+        }
 
-		private void SpendShovel()
-		{
-			currentShovelCount--;
+        private void CollectTarget()
+        {
+            currentTargetCount++;
+            UpdateTargetCount(currentTargetCount);
 
-			if (currentShovelCount < 0)
-			{
-				return;
-			}
+            if (currentTargetCount >= configGame.maxTargetCount)
+                EndGameWin();
+        }
 
-			UpdateShovelCount(currentShovelCount);
+        private void SpendShovel()
+        {
+            currentShovelCount--;
 
-			if (currentShovelCount == 0)
-			{
-				EndGameLose();
-			}
-		}
+            if (currentShovelCount < 0)
+            {
+                return;
+            }
 
-		private void EndGameWin()
-		{
-			isGameEnabled = false;
-			eventController.onGameWin?.Invoke(currentShovelCount,currentTargetCount);
-		}
+            UpdateShovelCount(currentShovelCount);
 
-		private void EndGameLose()
-		{
-			isGameEnabled = false;
-			eventController.onGameEnd?.Invoke(currentShovelCount, currentTargetCount);
-		}
+            if (currentShovelCount == 0)
+            {
+                EndGameLose();
+            }
+        }
 
-		private async void InitUI()
-		{
-			if (isGameEnabled)
-				return;
+        private void EndGameWin()
+        {
+            isGameEnabled = false;
+            eventController.onGameWin?.Invoke(currentShovelCount, currentTargetCount);
+        }
 
-			await Task.Yield();
-			currentShovelCount = configGame.startShovelCounter;
-			currentTargetCount = 0;
-			UpdateShovelCount(currentShovelCount);
-			UpdateTargetCount(currentTargetCount);
-		}
+        private void EndGameLose()
+        {
+            isGameEnabled = false;
+            eventController.onGameEnd?.Invoke(currentShovelCount, currentTargetCount);
+        }
 
-		private void UpdateShovelCount(int count)
-		{
-			eventController.onShovelCountUpdate?.Invoke(count);
-		}
+        private async void InitUI()
+        {
+            if (isGameEnabled)
+                return;
 
-		private void UpdateTargetCount(int count)
-		{
-			eventController.onTargetCountUpdate?.Invoke(count);
-		}
+            await Task.Yield();
+            currentShovelCount = configGame.startShovelCounter;
+            currentTargetCount = 0;
+            UpdateShovelCount(currentShovelCount);
+            UpdateTargetCount(currentTargetCount);
+        }
 
-		private void OnApplicationQuit()
-		{
-			eventController.onAppQuit?.Invoke();
-		}
+        private void UpdateShovelCount(int count)
+        {
+            eventController.onShovelCountUpdate?.Invoke(count);
+        }
 
-		private void QuitApp()
-		{
-			Application.Quit();
-		}
+        private void UpdateTargetCount(int count)
+        {
+            eventController.onTargetCountUpdate?.Invoke(count);
+        }
 
-		private SaveParameters CollectSaveGame()
-		{
-			if (!isGameEnabled)
-				return null;
+        private void OnApplicationQuit()
+        {
+            eventController.onAppQuit?.Invoke();
+        }
 
-			SaveParameters save = new SaveParameters();
-			save.name = "game";
-			save.intList = new List<int> { currentTargetCount, currentShovelCount };
-			return save;
-		}
+        private void QuitApp()
+        {
+            Application.Quit();
+        }
 
-		private bool RestoreSaveData(SaveParameters save)
-		{
-			if (save.intList.Count != 2)
-				return false;
+        private SaveParameters CollectSaveGame()
+        {
+            if (!isGameEnabled)
+                return null;
 
-			currentTargetCount = save.intList[0];
-			currentShovelCount = save.intList[1];
-			return true;
-		}
+            SaveParameters save = new SaveParameters();
+            save.name = "game";
+            save.intList = new List<int> {currentTargetCount, currentShovelCount};
+            return save;
+        }
 
-		private SaveParameters CollectSaveField() => isGameEnabled ? mapLoader.GetSave() : null;
+        private bool RestoreSaveData(SaveParameters save)
+        {
+            if (save.intList.Count != 2)
+                return false;
 
-		private bool RestoreSaveField(SaveParameters save) => mapLoader.RestoreSave(save);
-	}
+            currentTargetCount = save.intList[0];
+            currentShovelCount = save.intList[1];
+            return true;
+        }
+
+        private SaveParameters CollectSaveField() => isGameEnabled ? mapLoader.GetSave() : null;
+
+        private bool RestoreSaveField(SaveParameters save) => mapLoader.RestoreSave(save);
+    }
 }

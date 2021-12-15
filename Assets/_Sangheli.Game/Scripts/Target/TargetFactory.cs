@@ -5,31 +5,29 @@ using UnityEngine;
 
 namespace Sangheli.Factory
 {
-	public class TargetFactory : MonoBehaviour
-	{
-		[SerializeField]
-		private RectTransform parentContainer;
+    public class TargetFactory : MonoBehaviour
+    {
+        [SerializeField] private RectTransform parentContainer;
 
-		[SerializeField]
-		private ConfigTargetPrefab configTargetPrefab;
+        [SerializeField] private ConfigTargetPrefab configTargetPrefab;
 
-		private EventController eventController;
+        private EventController eventController;
 
-		private void Start()
-		{
-			eventController = EventController.GetInstance();
+        private void Start()
+        {
+            eventController = EventController.GetInstance();
 
-			eventController.createTarget += CreateTarget;
-		}
+            eventController.createTarget += CreateTarget;
+        }
 
-		private void OnDestroy()
-		{
-			eventController.createTarget -= CreateTarget;
-		}
+        private void OnDestroy()
+        {
+            eventController.createTarget -= CreateTarget;
+        }
 
-		private Target CreateTarget()
-		{
-			return Instantiate(configTargetPrefab.prefab, Vector3.zero, Quaternion.identity,parentContainer);
-		}
-	}
+        private Target CreateTarget()
+        {
+            return Instantiate(configTargetPrefab.prefab, Vector3.zero, Quaternion.identity, parentContainer);
+        }
+    }
 }

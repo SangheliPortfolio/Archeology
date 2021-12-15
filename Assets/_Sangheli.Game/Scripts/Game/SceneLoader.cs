@@ -4,25 +4,25 @@ using UnityEngine.SceneManagement;
 
 namespace Sangheli.Game
 {
-	public class SceneLoader : MonoBehaviour
-	{
-		private EventController eventController;
+    public class SceneLoader : MonoBehaviour
+    {
+        private EventController eventController;
 
-		private void Start()
-		{
-			eventController = EventController.GetInstance();
+        private void Start()
+        {
+            eventController = EventController.GetInstance();
 
-			eventController.onGameReload += ReloadScene;
-		}
+            eventController.onGameReload += ReloadScene;
+        }
 
-		private void OnDestroy()
-		{
-			eventController.onGameReload -= ReloadScene;
-		}
+        private void OnDestroy()
+        {
+            eventController.onGameReload -= ReloadScene;
+        }
 
-		public void ReloadScene()
-		{
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-		}
-	}
+        public void ReloadScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
 }
