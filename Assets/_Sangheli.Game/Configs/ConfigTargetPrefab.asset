@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e707e0eee34774e9d6ba214a4b6293, type: 3}
   m_Name: ConfigTargetPrefab
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5224023365392440679, guid: 146687117fbac814d873ecc58b33c51a, type: 3}
+  prefab: {fileID: 7027184909933757530, guid: 146687117fbac814d873ecc58b33c51a, type: 3}

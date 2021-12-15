@@ -1,8 +1,6 @@
 using Sangheli.Config;
 using Sangheli.Save;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Sangheli.Game

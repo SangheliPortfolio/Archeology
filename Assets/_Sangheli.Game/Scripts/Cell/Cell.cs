@@ -1,7 +1,5 @@
 using Sangheli.Config;
 using Sangheli.Event;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -20,7 +18,7 @@ namespace Sangheli.Game
 
 		private bool targetCollected;
 		private int targetLayer = -1;
-		private AbstractTarget currentTarget;
+		private Target currentTarget;
 
 		private Camera _camera;
 
@@ -96,7 +94,7 @@ namespace Sangheli.Game
 				if (this.currentTarget != null)
 					return;
 
-				System.Func<AbstractTarget> funcCreateTarget = this.eventController.createTarget;
+				System.Func<Target> funcCreateTarget = this.eventController.createTarget;
 				if (funcCreateTarget != null)
 				{
 					this.currentTarget = funcCreateTarget.Invoke();
