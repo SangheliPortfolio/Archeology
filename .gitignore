@@ -63,3 +63,4 @@ crashlytics-build.properties
 .vsconfig
 .editorconfig
 Sangheli.Game.csproj.DotSettings
+Assets/Plugins/Zenject/OptionalExtras/
