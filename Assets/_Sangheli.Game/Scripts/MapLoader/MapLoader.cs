@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Sangheli.Config;
+using Sangheli.Event;
 using Sangheli.Save;
 using UnityEngine;
+using Zenject;
 
 namespace Sangheli.Game
 {
@@ -24,6 +26,16 @@ namespace Sangheli.Game
 
         private bool levelLoaded;
 
+        private EventController _eventController;
+        private Camera _camera;
+
+        [Inject]
+        public void Construct(EventController eventController)
+        {
+            _eventController = eventController;
+            _camera = Camera.main;
+        }
+        
         public override void SpawnField()
         {
             SpawnField(default, default);
@@ -61,7 +73,7 @@ namespace Sangheli.Game
                 var newCell = Instantiate(cellPrefab, pos, Quaternion.identity, fieldParent);
                 newCell.transform.localScale = scale;
                 cellList.Add(newCell);
-                newCell.Init(configCell);
+                newCell.Init(_eventController,_camera,configCell);
             }
 
             SetTargetsToField(cellList);

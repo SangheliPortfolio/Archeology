@@ -1,35 +1,33 @@
-using System;
 using System.Collections.Generic;
 using Sangheli.Event;
 using UnityEngine;
+using Zenject;
 
 namespace Sangheli.Save
 {
     public class SaveManager : MonoBehaviour
     {
-        private EventController eventController;
-
-        private void Start()
-        {
-            eventController = EventController.GetInstance();
-
-            eventController.onAppStart += OnAppStart;
-            eventController.onAppQuit += OnAppQuit;
-
-            eventController.onGameReload += ResetSaves;
-        }
+        private EventController _eventController;
 
         private void OnDestroy()
         {
-            eventController.onAppStart -= OnAppStart;
-            eventController.onAppQuit -= OnAppQuit;
+            _eventController.onAppStart -= OnAppStart;
+            _eventController.onAppQuit -= OnAppQuit;
+            _eventController.onGameReload -= ResetSaves;
+        }
 
-            eventController.onGameReload -= ResetSaves;
+        [Inject]
+        public void Construct(EventController eventController)
+        {
+            _eventController = eventController;
+            _eventController.onAppStart += OnAppStart;
+            _eventController.onAppQuit += OnAppQuit;
+            _eventController.onGameReload += ResetSaves;
         }
 
         private bool OnAppStart()
         {
-            if (eventController.restoreSaveGame == null || eventController.restoreSaveField == null)
+            if (_eventController.restoreSaveGame == null || _eventController.restoreSaveField == null)
                 return false;
 
             var saveGame = GetParameters("game");
@@ -38,15 +36,15 @@ namespace Sangheli.Save
             if (saveGame == null || saveField == null)
                 return false;
 
-            var resultGame = eventController.restoreSaveGame.Invoke(saveGame);
-            var resultField = eventController.restoreSaveField.Invoke(saveField);
+            var resultGame = _eventController.restoreSaveGame.Invoke(saveGame);
+            var resultField = _eventController.restoreSaveField.Invoke(saveField);
             return resultGame && resultField;
         }
 
         private void OnAppQuit()
         {
-            var saveGame = eventController.writeSaveGame?.Invoke();
-            var saveField = eventController.writeSaveField?.Invoke();
+            var saveGame = _eventController.writeSaveGame?.Invoke();
+            var saveField = _eventController.writeSaveField?.Invoke();
 
             if (saveGame != null && saveField != null)
             {

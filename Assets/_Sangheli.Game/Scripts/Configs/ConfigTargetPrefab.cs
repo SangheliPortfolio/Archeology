@@ -1,4 +1,3 @@
-using Sangheli.Game;
 using UnityEngine;
 
 namespace Sangheli.Config
@@ -6,6 +5,6 @@ namespace Sangheli.Config
     [CreateAssetMenu(fileName = "ConfigTargetPrefab", menuName = "SangheliGame/CreateTargetPrefabConfig", order = 1)]
     public class ConfigTargetPrefab : ScriptableObject
     {
-        public Target prefab;
+        public Target.Target prefab;
     }
 }

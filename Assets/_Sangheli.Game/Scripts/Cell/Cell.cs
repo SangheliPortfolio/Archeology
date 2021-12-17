@@ -1,9 +1,8 @@
-using System;
 using Sangheli.Config;
 using Sangheli.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Random = UnityEngine.Random;
+using Zenject;
 
 namespace Sangheli.Game
 {
@@ -15,21 +14,20 @@ namespace Sangheli.Game
         private int currentState;
         private int maxState;
 
-        private EventController eventController;
+        private EventController _eventController;
 
         private bool targetCollected;
         private int targetLayer = -1;
-        private Target currentTarget;
+        private Target.Target currentTarget;
 
         private Camera _camera;
+        private bool _cellFinished;
 
-        private bool cellFinished;
-
-        public override void Init(ConfigCell configCell, int cellSize = -1)
+        public override void Init(EventController eventController,Camera camera, ConfigCell configCell, int cellSize = -1)
         {
-            _camera = Camera.main;
+            _eventController = eventController;
+            _camera = camera;
             _configCell = configCell;
-            eventController = EventController.GetInstance();
 
             if (cellSize < 0 || cellSize > configCell.cellStepCount)
                 cellSize = configCell.cellStepCount;
@@ -46,7 +44,7 @@ namespace Sangheli.Game
 
         private void OnMouseDown()
         {
-            if (cellFinished)
+            if (_cellFinished)
                 return;
 
             if (EventSystem.current.IsPointerOverGameObject())
@@ -63,11 +61,11 @@ namespace Sangheli.Game
             if (currentState < 1)
             {
                 currentState = 1;
-                cellFinished = true;
+                _cellFinished = true;
             }
             else
             {
-                eventController.onCellClicked?.Invoke();
+                _eventController.onCellClicked?.Invoke();
             }
 
             UpdateVisual(currentState);
@@ -76,7 +74,7 @@ namespace Sangheli.Game
 
         private bool IsGameEnabled()
         {
-            var func = eventController.isGameEnabled;
+            var func = _eventController.isGameEnabled;
             return func == null || func.Invoke();
         }
 
@@ -84,7 +82,7 @@ namespace Sangheli.Game
         {
             if (targetCollected || currentState != targetLayer || currentTarget != null) return;
 
-            var funcCreateTarget = eventController.createTarget;
+            var funcCreateTarget = _eventController.createTarget;
             if (funcCreateTarget == null) return;
 
             currentTarget = funcCreateTarget.Invoke();
@@ -134,11 +132,11 @@ namespace Sangheli.Game
             targetCollected = index == 1;
         }
 
-        public override int GetCellFinished() => cellFinished ? 1 : 0;
+        public override int GetCellFinished() => _cellFinished ? 1 : 0;
 
         public override void SetCellFinished(int index)
         {
-            cellFinished = index == 1;
+            _cellFinished = index == 1;
         }
 
         public override void InitCellSaveData()

@@ -1,26 +1,27 @@
 using Sangheli.Event;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace Sangheli.Game
 {
     public class SceneLoader : MonoBehaviour
     {
-        private EventController eventController;
-
-        private void Start()
-        {
-            eventController = EventController.GetInstance();
-
-            eventController.onGameReload += ReloadScene;
-        }
+        private EventController _eventController;
 
         private void OnDestroy()
         {
-            eventController.onGameReload -= ReloadScene;
+            _eventController.onGameReload -= ReloadScene;
         }
 
-        public void ReloadScene()
+        [Inject]
+        public void Construct(EventController eventController)
+        {
+            _eventController = eventController;
+            _eventController.onGameReload += ReloadScene;
+        }
+
+        private void ReloadScene()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }

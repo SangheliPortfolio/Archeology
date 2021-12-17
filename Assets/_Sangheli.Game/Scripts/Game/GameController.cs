@@ -4,6 +4,7 @@ using Sangheli.Config;
 using Sangheli.Event;
 using Sangheli.Save;
 using UnityEngine;
+using Zenject;
 
 namespace Sangheli.Game
 {
@@ -13,58 +14,64 @@ namespace Sangheli.Game
 
         [SerializeField] private ConfigGame configGame;
 
-        private EventController eventController;
+        private EventController _eventController;
+        private int currentShovelCount;
 
         private int currentTargetCount;
-        private int currentShovelCount;
 
         private bool isGameEnabled;
 
-        private void Awake()
-        {
-            eventController = EventController.GetInstance();
-        }
-
         private void Start()
         {
-            eventController.onStartGameClick += mapLoader.SpawnField;
-            eventController.onStartGameClick += InitUI;
-            eventController.onStartGameClick += StartGame;
-
-            eventController.onQuitAppClick += QuitApp;
-
-            eventController.onCollectTarget += CollectTarget;
-            eventController.onCellClicked += SpendShovel;
-
-            eventController.isGameEnabled += () => isGameEnabled;
-
-            eventController.writeSaveGame += CollectSaveGame;
-            eventController.restoreSaveGame += RestoreSaveData;
-
-            eventController.writeSaveField += CollectSaveField;
-            eventController.restoreSaveField += RestoreSaveField;
-
             RestoreSaves();
         }
 
         private void OnDestroy()
         {
-            eventController.onStartGameClick -= mapLoader.SpawnField;
-            eventController.onStartGameClick -= InitUI;
-            eventController.onStartGameClick -= StartGame;
+            _eventController.onStartGameClick -= mapLoader.SpawnField;
+            _eventController.onStartGameClick -= InitUI;
+            _eventController.onStartGameClick -= StartGame;
 
-            eventController.onQuitAppClick -= QuitApp;
+            _eventController.onQuitAppClick -= QuitApp;
 
-            eventController.onCollectTarget -= CollectTarget;
-            eventController.onCellClicked -= SpendShovel;
+            _eventController.onCollectTarget -= CollectTarget;
+            _eventController.onCellClicked -= SpendShovel;
 
-            eventController.isGameEnabled -= () => isGameEnabled;
+            _eventController.isGameEnabled -= () => isGameEnabled;
 
-            eventController.writeSaveGame -= CollectSaveGame;
-            eventController.restoreSaveGame -= RestoreSaveData;
+            _eventController.writeSaveGame -= CollectSaveGame;
+            _eventController.restoreSaveGame -= RestoreSaveData;
 
-            eventController.writeSaveField -= CollectSaveField;
-            eventController.restoreSaveField -= RestoreSaveField;
+            _eventController.writeSaveField -= CollectSaveField;
+            _eventController.restoreSaveField -= RestoreSaveField;
+        }
+
+        private void OnApplicationQuit()
+        {
+            _eventController.onAppQuit?.Invoke();
+        }
+
+        [Inject]
+        public void Construct(EventController eventController)
+        {
+            _eventController = eventController;
+
+            _eventController.onStartGameClick += mapLoader.SpawnField;
+            _eventController.onStartGameClick += InitUI;
+            _eventController.onStartGameClick += StartGame;
+
+            _eventController.onQuitAppClick += QuitApp;
+
+            _eventController.onCollectTarget += CollectTarget;
+            _eventController.onCellClicked += SpendShovel;
+
+            _eventController.isGameEnabled += () => isGameEnabled;
+
+            _eventController.writeSaveGame += CollectSaveGame;
+            _eventController.restoreSaveGame += RestoreSaveData;
+
+            _eventController.writeSaveField += CollectSaveField;
+            _eventController.restoreSaveField += RestoreSaveField;
         }
 
         private void StartGame()
@@ -72,12 +79,11 @@ namespace Sangheli.Game
             isGameEnabled = true;
         }
 
-        private async void RestoreSaves()
+        private void RestoreSaves()
         {
-            await Task.Yield();
             var restored = false;
-            if (eventController.onAppStart != null)
-                restored = eventController.onAppStart.Invoke();
+            if (_eventController.onAppStart != null)
+                restored = _eventController.onAppStart.Invoke();
 
             if (!restored) return;
 
@@ -106,13 +112,13 @@ namespace Sangheli.Game
         private void EndGameWin()
         {
             isGameEnabled = false;
-            eventController.onGameWin?.Invoke(currentShovelCount, currentTargetCount);
+            _eventController.onGameWin?.Invoke(currentShovelCount, currentTargetCount);
         }
 
         private void EndGameLose()
         {
             isGameEnabled = false;
-            eventController.onGameEnd?.Invoke(currentShovelCount, currentTargetCount);
+            _eventController.onGameEnd?.Invoke(currentShovelCount, currentTargetCount);
         }
 
         private async void InitUI()
@@ -129,17 +135,12 @@ namespace Sangheli.Game
 
         private void UpdateShovelCount(int count)
         {
-            eventController.onShovelCountUpdate?.Invoke(count);
+            _eventController.onShovelCountUpdate?.Invoke(count);
         }
 
         private void UpdateTargetCount(int count)
         {
-            eventController.onTargetCountUpdate?.Invoke(count);
-        }
-
-        private void OnApplicationQuit()
-        {
-            eventController.onAppQuit?.Invoke();
+            _eventController.onTargetCountUpdate?.Invoke(count);
         }
 
         private void QuitApp()

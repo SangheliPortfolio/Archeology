@@ -1,11 +1,12 @@
 using Sangheli.Config;
+using Sangheli.Event;
 using UnityEngine;
 
 namespace Sangheli.Game
 {
     public abstract class AbstractCell : MonoBehaviour
     {
-        public abstract void Init(ConfigCell configCell, int cellSize = -1);
+        public abstract void Init(EventController eventController,Camera camera, ConfigCell configCell, int cellSize = -1);
         public abstract void UpdateVisual(int state = -1);
         public abstract void InitTarget();
         public abstract int GetCellFinished();

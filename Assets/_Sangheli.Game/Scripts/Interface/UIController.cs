@@ -2,6 +2,7 @@ using Sangheli.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Sangheli.UI
 {
@@ -36,29 +37,10 @@ namespace Sangheli.UI
         [SerializeField] private TMP_Text endGameCoinCount;
 
 
-        private EventController eventController;
-
-        private bool targetRectReady;
+        private EventController _eventController;
         private Rect targetRect;
 
-        private void Start()
-        {
-            eventController = EventController.GetInstance();
-
-            buttonPlay.onClick.AddListener(() => eventController.onStartGameClick?.Invoke());
-            buttonRestart.onClick.AddListener(() => eventController.onGameReload?.Invoke());
-            buttonRestart2.onClick.AddListener(() => eventController.onGameReload?.Invoke());
-
-            buttonExit.onClick.AddListener(() => eventController.onQuitAppClick?.Invoke());
-
-            eventController.onShovelCountUpdate += UpdateShovelCount;
-            eventController.onTargetCountUpdate += UpdateTargeetCount;
-
-            eventController.onGameWin += ShowGameWin;
-            eventController.onGameEnd += ShowGameLose;
-
-            eventController.getTargetRect += GetTargetRect;
-        }
+        private bool targetRectReady;
 
         private void OnDestroy()
         {
@@ -66,13 +48,33 @@ namespace Sangheli.UI
             buttonRestart.onClick.RemoveAllListeners();
             buttonRestart2.onClick.RemoveAllListeners();
 
-            eventController.onShovelCountUpdate -= UpdateShovelCount;
-            eventController.onTargetCountUpdate -= UpdateTargeetCount;
+            _eventController.onShovelCountUpdate -= UpdateShovelCount;
+            _eventController.onTargetCountUpdate -= UpdateTargeetCount;
 
-            eventController.onGameWin -= ShowGameWin;
-            eventController.onGameEnd -= ShowGameLose;
+            _eventController.onGameWin -= ShowGameWin;
+            _eventController.onGameEnd -= ShowGameLose;
 
-            eventController.getTargetRect -= GetTargetRect;
+            _eventController.getTargetRect -= GetTargetRect;
+        }
+
+        [Inject]
+        public void Construct(EventController eventController)
+        {
+            _eventController = eventController;
+
+            buttonPlay.onClick.AddListener(() => _eventController.onStartGameClick?.Invoke());
+            buttonRestart.onClick.AddListener(() => _eventController.onGameReload?.Invoke());
+            buttonRestart2.onClick.AddListener(() => _eventController.onGameReload?.Invoke());
+
+            buttonExit.onClick.AddListener(() => _eventController.onQuitAppClick?.Invoke());
+
+            _eventController.onShovelCountUpdate += UpdateShovelCount;
+            _eventController.onTargetCountUpdate += UpdateTargeetCount;
+
+            _eventController.onGameWin += ShowGameWin;
+            _eventController.onGameEnd += ShowGameLose;
+
+            _eventController.getTargetRect += GetTargetRect;
         }
 
         private Rect GetTargetRect()

@@ -2,34 +2,32 @@ using System;
 using Sangheli.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
-namespace Sangheli.Game
+namespace Sangheli.Target
 {
     public class Target : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        public Action onCollect;
-
         [SerializeField] private RectTransform rectTransform;
 
-        private Vector3 startPos;
+        private EventController _eventController;
+        private Vector3 diffVector;
         private Vector2 lastMousePosition;
-
-        private EventController eventController;
+        public Action onCollect;
 
         private Vector2 rectSize;
-        private Vector3 diffVector;
 
+        private Vector3 startPos;
 
+        public void Init(EventController eventController)
+        {
+            _eventController = eventController;
+        }
+        
         private void Start()
         {
-            eventController = EventController.GetInstance();
             rectSize = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
             diffVector = new Vector3(rectTransform.rect.width / 2, 0);
-        }
-
-        public void SetRectPosition(Vector2 pos)
-        {
-            rectTransform.position = pos;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -58,13 +56,18 @@ namespace Sangheli.Game
             if (overlapTarget)
             {
                 onCollect?.Invoke();
-                eventController.onCollectTarget?.Invoke();
+                _eventController.onCollectTarget?.Invoke();
                 gameObject.SetActive(false);
             }
             else
             {
                 rectTransform.position = startPos;
             }
+        }
+
+        public void SetRectPosition(Vector2 pos)
+        {
+            rectTransform.position = pos;
         }
 
         private bool IsRectTransformInsideSreen(RectTransform rectTransform)
@@ -85,7 +88,7 @@ namespace Sangheli.Game
 
         private bool IsOverlapTarget()
         {
-            var func = EventController.GetInstance().getTargetRect;
+            var func = _eventController.getTargetRect;
             if (func != null)
             {
                 var rect1 = new Rect(rectTransform.position - diffVector, rectSize);

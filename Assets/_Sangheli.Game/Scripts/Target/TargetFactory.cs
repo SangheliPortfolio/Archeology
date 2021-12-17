@@ -1,33 +1,34 @@
 using Sangheli.Config;
 using Sangheli.Event;
-using Sangheli.Game;
 using UnityEngine;
+using Zenject;
 
-namespace Sangheli.Factory
+namespace Sangheli.Target
 {
     public class TargetFactory : MonoBehaviour
     {
         [SerializeField] private RectTransform parentContainer;
-
         [SerializeField] private ConfigTargetPrefab configTargetPrefab;
 
-        private EventController eventController;
-
-        private void Start()
-        {
-            eventController = EventController.GetInstance();
-
-            eventController.createTarget += CreateTarget;
-        }
+        private EventController _eventController;
 
         private void OnDestroy()
         {
-            eventController.createTarget -= CreateTarget;
+            _eventController.createTarget -= CreateTarget;
+        }
+
+        [Inject]
+        public void Construct(EventController eventController)
+        {
+            _eventController = eventController;
+            _eventController.createTarget += CreateTarget;
         }
 
         private Target CreateTarget()
         {
-            return Instantiate(configTargetPrefab.prefab, Vector3.zero, Quaternion.identity, parentContainer);
+            var target = Instantiate(configTargetPrefab.prefab, Vector3.zero, Quaternion.identity, parentContainer);
+            target.Init(_eventController);
+            return target;
         }
     }
 }
