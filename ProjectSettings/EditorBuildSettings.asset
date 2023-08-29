@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Sangheli.Game/Scenes/game.unity
     guid: 73020a07a98edad4cba394c7e9f6df16
+  - enabled: 1
+    path: Assets/_Sangheli.Game/Scenes/startmenu.unity
+    guid: a004e498b67934c4188a868f6a26f746
   m_configObjects: {}

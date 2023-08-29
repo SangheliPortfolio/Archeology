@@ -23,7 +23,8 @@ namespace Sangheli.Game
 
         private void Start()
         {
-            RestoreSaves();
+            // RestoreSaves();
+            _eventController.onStartGameClick.Invoke();
         }
 
         private void OnDestroy()
